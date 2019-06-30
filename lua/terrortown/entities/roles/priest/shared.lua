@@ -38,7 +38,6 @@ hook.Add('TTT2FinishedLoading', 'PriestInitT', function()
 
 	if CLIENT then
 		LANG.AddToLanguage('English', PRIEST.name, 'Priest')
-		LANG.AddToLanguage('English', TEAM_INNOCENT, 'TEAM Priest')
 		LANG.AddToLanguage('English', 'info_popup_' .. PRIEST.name,
 			[[You are the Priest!
 			Use your holy deagle to convert players into your brotherhood. But be careful, only innocent players behave well.]])
@@ -46,16 +45,12 @@ hook.Add('TTT2FinishedLoading', 'PriestInitT', function()
         LANG.AddToLanguage('English', 'search_role_' .. PRIEST.abbr, 'This person was a Priest!')
 		LANG.AddToLanguage('English', 'target_' .. PRIEST.name, 'Priest')
 		LANG.AddToLanguage('English', 'ttt2_desc_' .. PRIEST.name, [[The Priest needs to win with the innocents!]])
-		LANG.AddToLanguage('English', 'hilite_win_' .. TEAM_INNOCENT, 'THE PRIEST WON') -- name of base role of a team
-		LANG.AddToLanguage('English', 'win_' .. TEAM_INNOCENT, 'The Priest has won!') -- teamname
-		LANG.AddToLanguage('English', 'ev_win_' .. TEAM_INNOCENT, 'The evil Priest won the round!')
 		LANG.AddToLanguage('English', 'credit_' .. PRIEST.abbr .. '_all', 'Priests, you have been awarded {num} equipment credit(s) for your performance.')
 
 		---------------------------------
 
 		-- maybe this language as well...
 		LANG.AddToLanguage('Deutsch', PRIEST.name, 'Priester')
-		LANG.AddToLanguage('Deutsch', TEAM_INNOCENT, 'TEAM Priest')
 		LANG.AddToLanguage('Deutsch', 'info_popup_' .. PRIEST.name,
 			[[Du bist ein Priester!
 			Benutze deine Heilige Deagle um andere Spieler in deine Bruderschaft aufzunehmen. Aber sei vorsichtig, nur Unschuldige verhalten sich gut.]])
@@ -63,9 +58,6 @@ hook.Add('TTT2FinishedLoading', 'PriestInitT', function()
 		LANG.AddToLanguage('Deutsch', 'search_role_' .. PRIEST.abbr, 'Diese Person war ein Priester!')
 		LANG.AddToLanguage('Deutsch', 'target_' .. PRIEST.name, 'Priester')
 		LANG.AddToLanguage('Deutsch', 'ttt2_desc_' .. PRIEST.name, [[Der Priester gewinnt zusammen mit den Unschuldigen!]])
-		LANG.AddToLanguage('Deutsch', 'hilite_win_' .. TEAM_INNOCENT, 'THE PRIEST WON') -- name of base role of a team
-		LANG.AddToLanguage('Deutsch', 'win_' .. TEAM_INNOCENT, 'Der Priester hat gewonnen!') -- teamname
-		LANG.AddToLanguage('Deutsch', 'ev_win_' .. TEAM_INNOCENT, 'Der böse Priester hat die Runde gewonnen!')
 		LANG.AddToLanguage('Deutsch', 'credit_' .. PRIEST.abbr .. '_all', 'Priester, dir wurde(n) {num} Ausrüstungs-Credit(s) für deine Leistung gegeben.')
 	end
 end) 
