@@ -9,7 +9,7 @@ ROLE.Base = 'ttt_role_base'
 ROLE.color = Color(185, 210, 95, 255)
 ROLE.dkcolor = Color(150, 175, 65, 255)
 ROLE.bgcolor = Color(215, 240, 130, 255)
-ROLE.abbr = "pri"
+ROLE.abbr = 'pri'
 ROLE.surviveBonus = 0 -- bonus multiplier for every survive while another player was killed
 ROLE.scoreKillsMultiplier = 1 -- multiplier for kill of player of another team
 ROLE.scoreTeamKillsMultiplier = -16 -- multiplier for teamkill
@@ -73,6 +73,7 @@ end)
 if SERVER then
 	local function InitRolePriest(ply)
 		ply:GiveEquipmentWeapon('weapon_ttt2_holydeagle')
+		PRIEST_DATA:AddToBrotherhood(ply)
     end
  
     hook.Add('TTT2UpdateSubrole', 'TTT2PriestGiveHolyDeagle_UpdateSubtole', function(ply, old, new) -- called on normal role set
