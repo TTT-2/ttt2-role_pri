@@ -12,11 +12,9 @@ SWEP.AutoSwitchFrom = false
 if SERVER then
 	AddCSLuaFile()
 
-	resource.AddFile('materials/vgui/ttt/icon_sidekickdeagle.vmt')
-
-	util.AddNetworkString('tttSidekickMSG')
+	resource.AddFile('materials/vgui/ttt/icon_holydeagle.vmt')
 else
-	hook.Add('Initialize', 'TTTInitSikiDeagleLang', function()
+	hook.Add('Initialize', 'TTTInitHolyDeagleLang', function()
 		LANG.AddToLanguage('English', 'ttt2_weapon_holydeagle_desc', 'Shoot a player to make him holy, but be careful to shoot only innocent people.')
 		LANG.AddToLanguage('Deutsch', 'ttt2_weapon_holydeagle_desc', 'Schieße auf einen Spieler, um ihn heilig zu machen. Aber pass auf nur auf Unschuldige zu schießen.')
 	end)
@@ -30,10 +28,10 @@ else
 	SWEP.ViewModelFlip = false
 
 	SWEP.Category = 'Deagle'
-	SWEP.Icon = 'vgui/ttt/icon_sidekickdeagle.vtf'
+	SWEP.Icon = 'vgui/ttt/icon_holydeagle.vtf'
 	SWEP.EquipMenuData = {
 		type = 'Weapon',
-		desc = 'ttt2_weapon_sidekickdeagle_desc'
+		desc = 'ttt2_weapon_holydeagle_desc'
 	}
 end
 
@@ -110,27 +108,3 @@ if SERVER then
 		return true
 	end)
 end
-
-
--- auto add sidekick weapon into jackal shop
--- hook.Add('LoadedFallbackShops', 'SidekickDeagleAddToShop', function()
--- 	if JACKAL and SIDEKICK and JACKAL.fallbackTable then
--- 		AddWeaponIntoFallbackTable('weapon_ttt2_sidekickdeagle', JACKAL)
--- 	end
--- end)
-
--- if CLIENT then
--- 	hook.Add('TTT2FinishedLoading', 'InitSikiMsgText', function()
--- 		LANG.AddToLanguage('English', 'ttt2_siki_shot', 'Successfully shot {name} as Sidekick!')
--- 		LANG.AddToLanguage('Deutsch', 'ttt2_siki_shot', 'Erfolgreich {name} als Sidekick geschossen!')
--- 	end)
-
--- 	net.Receive('tttSidekickMSG', function(len)
--- 		local target = net.ReadEntity()
-
--- 		if not target or not IsValid(target) then return end
-
--- 		local text = LANG.GetParamTranslation('ttt2_siki_shot', {name = target:GetName()})
--- 		MSTACK:AddMessage(text)
--- 	end)
--- end
