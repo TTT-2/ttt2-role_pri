@@ -2,6 +2,27 @@ PRIEST_DATA = {}
 PRIEST_DATA.brotherhood = {}
 
 if CLIENT then
+    hook.Add('Initialize', 'TTTInitPriestMessageLang', function()
+		LANG.AddToLanguage('English', 'ttt2_priest_added', 'It seems like a player was added to the brotherhood.')
+		LANG.AddToLanguage('English', 'ttt2_priest_brother_died', 'It seems like a brother died.')
+		LANG.AddToLanguage('English', 'ttt2_priest_detective', 'The holy spirit was used to hurt a detective.')
+		LANG.AddToLanguage('English', 'ttt2_priest_infected', 'The holy spirit was used to kill an infected.')
+		LANG.AddToLanguage('English', 'ttt2_priest_died', 'The holy spirit killed a priest.')
+        
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_added', 'Es scheint so, als wäre ein weiterer Spieler der Bruderschaft beigetreten.')
+		LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_died', 'Es scheint so, als wäre ein Bruder gestorben.')
+		LANG.AddToLanguage('Deutsch', 'ttt2_priest_detective', 'Der heilige Geist wurde verwendet um einen Detektiv zu verletzen.')
+		LANG.AddToLanguage('Deutsch', 'ttt2_priest_infected', 'Der heilige Geist wurde verwendet um einen Infizierten zu töten.')
+		LANG.AddToLanguage('Deutsch', 'ttt2_priest_died', 'Der heilige Geist hat einen Priester getötet.')
+    end)
+
+    net.Receive('ttt2_role_priest_msg', function()
+        local string_identifier = net.ReadString()
+        if GetConVar('ttt_priest_show_messages'):GetBool() and PRIEST_DATA:IsBrother(LocalPlayer()) then 
+            MSTACK:AddMessage(LANG.GetTranslation(string_identifier))
+        end
+    end)
+
     net.Receive('ttt2_role_priest_new_brother', function() 
         local new_brother = net.ReadEntity()
         if not new_brother or not new_brother:IsPlayer() then return end
@@ -46,8 +67,6 @@ if CLIENT then
 
     -- the brother column should only be visible when you're in the brotherhood
     function PRIEST_DATA:UpdateScoreboard()
-        if not self:IsBrother(LocalPlayer()) then return end
-
         GAMEMODE:ScoreboardCreate()
         GAMEMODE:ScoreboardHide()
     end
@@ -56,6 +75,7 @@ end
 if SERVER then
     util.AddNetworkString('ttt2_role_priest_new_brother')
     util.AddNetworkString('ttt2_role_priest_remove_brother')
+    util.AddNetworkString('ttt2_role_priest_msg')
 
     function PRIEST_DATA:ShootBrotherhood(ply, attacker)
         if ply:GetTeam() == TEAM_INNOCENT then
@@ -64,26 +84,39 @@ if SERVER then
                 local inflictor = ents.Create('weapon_ttt2_holydeagle')
                 ply:TakeDamage(GetConVar('ttt_pri_damage_dete'):GetInt(), attacker, inflictor)
 
+                self:SendMessage('ttt2_priest_detective')
+
             -- INNOCENT PLAYERS ARE THE ONLY ONES TO BE CONVERTED BY THE HOLY DEAGLE
             else
                 self:AddToBrotherhood(ply)
+
+                self:SendMessage('ttt2_priest_added')
             end
 
         -- UNKNOWN PLAYERS ARE CONVERTED AS WELL
         elseif ply:GetSubRole() == ROLE_UNKNOWN then
             self:AddToBrotherhood(ply)
+
+            self:SendMessage('ttt2_priest_added')
         elseif ply:GetTeam() == TEAM_INFECTED then
             local inflictor = ents.Create('weapon_ttt2_holydeagle')
             ply:TakeDamage(10000, attacker, inflictor)
+
+            self:SendMessage('ttt2_priest_infected')
         else
             local inflictor = ents.Create('weapon_ttt2_holydeagle')
             attacker:TakeDamage(10000, attacker, inflictor)
+
+            self:SendMessage('ttt2_priest_died')
         end
     end
 
     function PRIEST_DATA:BrotherDies(ply)
         -- unknown players keep their status
         if ply:GetSubRole() == ROLE_UNKNOWN then return end
+        
+        -- only remove if player is in brotherhood
+        if not PRIEST_DATA:IsBrother(ply) then return end
 
         self:RemoveFromBrotherhood(ply)
     end
@@ -107,6 +140,26 @@ if SERVER then
         net.Start('ttt2_role_priest_remove_brother')
 		net.WriteEntity(ply)
         net.Send(player.GetAll()) -- send to all players
+
+        self:SendMessage('ttt2_priest_brother_died')
+    end
+
+    -- special case for unknown
+    hook.Add('PlayerSpawn', 'ttt2_priest_unknown', function(ply)
+        if ply:GetSubRole() == ROLE_UNKNOWN and PRIEST_DATA:IsBrother(ply) then 
+            timer.Create('ttt2_priest_unknown_give_brotherhood', 0.05, 1, function() STATUS:AddStatus(ply, 'ttt2_role_priest_brotherhood') end)
+        end
+    end)
+
+    -- death of player in brotherhood
+    hook.Add('PlayerDeath', 'ttt2_priest_player_death', function(ply)
+        PRIEST_DATA:BrotherDies(ply)
+    end)
+
+    function PRIEST_DATA:SendMessage(identifier)
+        net.Start('ttt2_role_priest_msg')
+        net.WriteString(identifier)
+        net.Send(player.GetAll())
     end
 end
 

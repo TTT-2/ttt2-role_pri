@@ -20,7 +20,7 @@ if CLIENT then
             --print("E")
             local x = ScrW() / 2.0
             local y = ScrH() / 1.5            
-            draw.SimpleText("(PLAYER IS IN BROTHERHOOD)", "TabLarge", x, y - 50, client:GetRoleColor(), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
+            draw.SimpleText("(PLAYER IS IN BROTHERHOOD)", "TabLarge", x, y - 50, PRIEST.color, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
         end
     end
     hook.Add('HUDPaint', 'ttt2_role_priest_hud_info', DrawPriestInfo)

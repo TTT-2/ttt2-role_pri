@@ -88,6 +88,9 @@ function SWEP:PrimaryAttack()
 	BaseClass.PrimaryAttack(self)
 
 	timer.Create('ttt2_priest_refill_holy_deagle', GetConVar('ttt_pri_refill_time'):GetInt(), 1, function() RefillHolyDeagle(self) end)
+	if CLIENT then
+		STATUS:AddTimedStatus('ttt2_role_priest_holy_deagle', GetConVar('ttt_pri_refill_time'):GetInt())
+	end
 end
 
 if SERVER then
