@@ -181,9 +181,6 @@ if SERVER then
     end
 
     -- a few hooks that reset the brothers and the scoreboard
-    hook.Add('TTTBeginRound', 'ttt2_priest_update_scorboard_begin', function()
-        PRIEST_DATA:ClearBrotherhood()
-    end)
     hook.Add('TTTEndRound', 'ttt2_priest_update_scorboard_end', function()
         PRIEST_DATA:ClearBrotherhood()
     end)
