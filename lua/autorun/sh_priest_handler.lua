@@ -3,17 +3,17 @@ PRIEST_DATA.brotherhood = {}
 
 if CLIENT then
     hook.Add('Initialize', 'TTTInitPriestMessageLang', function()
-		LANG.AddToLanguage('English', 'ttt2_priest_added', 'It seems like a player was added to the brotherhood.')
-		LANG.AddToLanguage('English', 'ttt2_priest_brother_died', 'It seems like a brother died.')
-		LANG.AddToLanguage('English', 'ttt2_priest_detective', 'The holy spirit was used to hurt a detective.')
-		LANG.AddToLanguage('English', 'ttt2_priest_infected', 'The holy spirit was used to kill an infected.')
-		LANG.AddToLanguage('English', 'ttt2_priest_died', 'The holy spirit killed a priest.')
+        LANG.AddToLanguage('English', 'ttt2_priest_added', 'It seems like a player was added to the brotherhood.')
+        LANG.AddToLanguage('English', 'ttt2_priest_brother_died', 'It seems like a brother died.')
+        LANG.AddToLanguage('English', 'ttt2_priest_detective', 'The holy spirit was used to hurt a detective.')
+        LANG.AddToLanguage('English', 'ttt2_priest_infected', 'The holy spirit was used to kill an infected.')
+        LANG.AddToLanguage('English', 'ttt2_priest_died', 'The holy spirit killed a priest.')
         
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_added', 'Es scheint so, als wäre ein weiterer Spieler der Bruderschaft beigetreten.')
-		LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_died', 'Es scheint so, als wäre ein Bruder gestorben.')
-		LANG.AddToLanguage('Deutsch', 'ttt2_priest_detective', 'Der heilige Geist wurde verwendet um einen Detektiv zu verletzen.')
-		LANG.AddToLanguage('Deutsch', 'ttt2_priest_infected', 'Der heilige Geist wurde verwendet um einen Infizierten zu töten.')
-		LANG.AddToLanguage('Deutsch', 'ttt2_priest_died', 'Der heilige Geist hat einen Priester getötet.')
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_died', 'Es scheint so, als wäre ein Bruder gestorben.')
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_detective', 'Der heilige Geist wurde verwendet um einen Detektiv zu verletzen.')
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_infected', 'Der heilige Geist wurde verwendet um einen Infizierten zu töten.')
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_died', 'Der heilige Geist hat einen Priester getötet.')
     end)
 
     net.Receive('ttt2_role_priest_msg', function()
@@ -51,7 +51,7 @@ if CLIENT then
             else
                 return '-'
             end
-		end, 70)
+        end, 70)
     end)
 
     -- a few hooks that reset the brother scoreboard
@@ -128,7 +128,7 @@ if SERVER then
         self.brotherhood[tostring(ply:SteamID64() or ply:EntIndex())] = true
 
         net.Start('ttt2_role_priest_new_brother')
-		net.WriteEntity(ply)
+        net.WriteEntity(ply)
         net.Send(player.GetAll()) -- send to all players
     end
 
@@ -138,7 +138,7 @@ if SERVER then
         self.brotherhood[tostring(ply:SteamID64() or ply:EntIndex())] = nil
 
         net.Start('ttt2_role_priest_remove_brother')
-		net.WriteEntity(ply)
+        net.WriteEntity(ply)
         net.Send(player.GetAll()) -- send to all players
 
         self:SendMessage('ttt2_priest_brother_died')
@@ -164,5 +164,8 @@ if SERVER then
 end
 
 function PRIEST_DATA:IsBrother(ply)
+    if not ply or not IsValid(ply) or not ply:IsPlayer() then return false end
+    if not ply:SteamID64() or not IsValid(ply:SteamID64()) or not ply:EntIndex() or not IsValid(ply:EntIndex()) then return false end
+
     return self.brotherhood[tostring(ply:SteamID64() or ply:EntIndex())] or false
 end
