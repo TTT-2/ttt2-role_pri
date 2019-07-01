@@ -17,6 +17,7 @@ ROLE.preventFindCredits = true
 ROLE.preventKillCredits = true
 ROLE.preventTraitorAloneCredits = true
 ROLE.preventWin = false
+ROLE.unknownTeam = true -- player don't know their teammates
 
 roles.InitCustomTeam(ROLE.name, {
     icon = 'vgui/ttt/dynamic/roles/icon_pri',
