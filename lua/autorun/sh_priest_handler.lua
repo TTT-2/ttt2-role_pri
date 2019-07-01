@@ -7,12 +7,14 @@ if CLIENT then
         LANG.AddToLanguage('English', 'ttt2_priest_brother_died', 'It seems like a brother died.')
         LANG.AddToLanguage('English', 'ttt2_priest_detective', 'The holy spirit was used to hurt a detective.')
         LANG.AddToLanguage('English', 'ttt2_priest_infected', 'The holy spirit was used to kill an infected.')
+        LANG.AddToLanguage('English', 'ttt2_priest_sidekick', 'The holy spirit was used to kill an sidekick.')
         LANG.AddToLanguage('English', 'ttt2_priest_died', 'The holy spirit killed a priest.')
         
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_added', 'Es scheint so, als wäre ein weiterer Spieler der Bruderschaft beigetreten.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_died', 'Es scheint so, als wäre ein Bruder gestorben.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_detective', 'Der heilige Geist wurde verwendet um einen Detektiv zu verletzen.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_infected', 'Der heilige Geist wurde verwendet um einen Infizierten zu töten.')
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_sidekick', 'Der heilige Geist wurde verwendet um einen Sidekick zu töten.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_died', 'Der heilige Geist hat einen Priester getötet.')
     end)
 
@@ -43,6 +45,12 @@ if CLIENT then
         PRIEST_DATA:UpdateScoreboard()
     end)
 
+    net.Receive('ttt2_role_priest_clear_brotherhood', function()
+        PRIEST_DATA.brotherhood = {}
+
+        PRIEST_DATA:UpdateScoreboard()
+    end)
+
     hook.Add('TTTScoreboardColumns', 'ttt2_priest_brotherhood_column', function(pnl)
         if not PRIEST_DATA:IsBrother(LocalPlayer()) then return end
         pnl:AddColumn('Brother', function(ply, label)         
@@ -52,17 +60,6 @@ if CLIENT then
                 return '-'
             end
         end, 70)
-    end)
-
-    -- a few hooks that reset the brother scoreboard
-    hook.Add('TTTPrepareRound', 'ttt2_priest_update_scorboard_prepare', function()
-        PRIEST_DATA:UpdateScoreboard()
-    end)
-    hook.Add('TTTBeginRound', 'ttt2_priest_update_scorboard_begin', function()
-        PRIEST_DATA:UpdateScoreboard()
-    end)
-    hook.Add('TTTEndRound', 'ttt2_priest_update_scorboard_end', function()
-        PRIEST_DATA:UpdateScoreboard()
     end)
 
     -- the brother column should only be visible when you're in the brotherhood
@@ -75,12 +72,13 @@ end
 if SERVER then
     util.AddNetworkString('ttt2_role_priest_new_brother')
     util.AddNetworkString('ttt2_role_priest_remove_brother')
+    util.AddNetworkString('ttt2_role_priest_clear_brotherhood')
     util.AddNetworkString('ttt2_role_priest_msg')
 
     function PRIEST_DATA:ShootBrotherhood(ply, attacker)
         if ply:GetTeam() == TEAM_INNOCENT then
-            -- A DETECTIVE CAN NOT BE CONVERTED AND HE GETS 30 DAMAGE
-            if ply:GetSubRole() == ROLE_DETECTIVE then
+            -- A DETECTIVE/SNIFFER CAN NOT BE CONVERTED AND HE GETS 30 DAMAGE
+            if ply:GetSubRole() == ROLE_DETECTIVE or ply:GetSubRole() == ROLE_SNIFFER then
                 local inflictor = ents.Create('weapon_ttt2_holydeagle')
                 ply:TakeDamage(GetConVar('ttt_pri_damage_dete'):GetInt(), attacker, inflictor)
 
@@ -98,14 +96,25 @@ if SERVER then
             self:AddToBrotherhood(ply)
 
             self:SendMessage('ttt2_priest_added')
+
+        -- INFECTED PLAYERS GET KILLED BY THE HOLY DEAGLE
         elseif ply:GetTeam() == TEAM_INFECTED then
             local inflictor = ents.Create('weapon_ttt2_holydeagle')
-            ply:TakeDamage(10000, attacker, inflictor)
+            ply:TakeDamage(250, attacker, inflictor)
 
             self:SendMessage('ttt2_priest_infected')
+
+        -- SIDEKICKS ARE KILLED BY THE HOLY DEAGLE
+        elseif ply:GetSubRole() == ROLE_SIDEKICK then
+            local inflictor = ents.Create('weapon_ttt2_holydeagle')
+            ply:TakeDamage(250, attacker, inflictor)
+
+            self:SendMessage('ttt2_priest_sidekick')
+
+        -- ALL OTHER EVIL ROLES KILL THE PRIEST
         else
             local inflictor = ents.Create('weapon_ttt2_holydeagle')
-            attacker:TakeDamage(10000, attacker, inflictor)
+            attacker:TakeDamage(250, attacker, inflictor)
 
             self:SendMessage('ttt2_priest_died')
         end
@@ -144,6 +153,15 @@ if SERVER then
         self:SendMessage('ttt2_priest_brother_died')
     end
 
+    function PRIEST_DATA:ClearBrotherhood()
+        STATUS:RemoveStatus(player.GetAll(), 'ttt2_role_priest_brotherhood')
+
+        self.brotherhood = {}
+
+        net.Start('ttt2_role_priest_clear_brotherhood')
+        net.Send(player.GetAll())
+    end
+
     -- special case for unknown
     hook.Add('PlayerSpawn', 'ttt2_priest_unknown', function(ply)
         if ply:GetSubRole() == ROLE_UNKNOWN and PRIEST_DATA:IsBrother(ply) then 
@@ -161,6 +179,14 @@ if SERVER then
         net.WriteString(identifier)
         net.Send(player.GetAll())
     end
+
+    -- a few hooks that reset the brothers and the scoreboard
+    hook.Add('TTTBeginRound', 'ttt2_priest_update_scorboard_begin', function()
+        PRIEST_DATA:ClearBrotherhood()
+    end)
+    hook.Add('TTTEndRound', 'ttt2_priest_update_scorboard_end', function()
+        PRIEST_DATA:ClearBrotherhood()
+    end)
 end
 
 function PRIEST_DATA:IsBrother(ply)

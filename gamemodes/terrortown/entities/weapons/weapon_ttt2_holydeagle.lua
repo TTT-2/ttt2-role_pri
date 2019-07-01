@@ -30,13 +30,13 @@ else
 	SWEP.Category = 'Deagle'
 	SWEP.Icon = 'vgui/ttt/icon_holydeagle.vtf'
 	SWEP.EquipMenuData = {
-		type = 'Weapon',
+		type = 'item_weapon',
 		desc = 'ttt2_weapon_holydeagle_desc'
 	}
 end
 
-SWEP.AllowDrop              = false
-SWEP.notBuyable             = true
+SWEP.AllowDrop = false
+SWEP.notBuyable = true
 
 -- dmg
 SWEP.Primary.Delay = 1
@@ -51,7 +51,6 @@ SWEP.Primary.DefaultClip = 1
 
 -- some other stuff
 SWEP.InLoadoutFor = nil
-SWEP.AllowDrop = true
 SWEP.IsSilent = false
 SWEP.NoSights = false
 SWEP.UseHands = true
@@ -69,8 +68,6 @@ SWEP.Primary.Sound = Sound('Weapon_Deagle.Single')
 
 SWEP.IronSightsPos = Vector(-6.361, -3.701, 2.15)
 SWEP.IronSightsAng = Vector(0, 0, 0)
-
-SWEP.notBuyable = true
 
 function SWEP:OnDrop()
 	self:Remove()
