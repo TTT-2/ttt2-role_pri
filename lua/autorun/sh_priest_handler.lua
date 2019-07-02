@@ -7,15 +7,19 @@ if CLIENT then
         LANG.AddToLanguage('English', 'ttt2_priest_brother_died', 'It seems like a brother died.')
         LANG.AddToLanguage('English', 'ttt2_priest_detective', 'The holy spirit was used to hurt a detective.')
         LANG.AddToLanguage('English', 'ttt2_priest_infected', 'The holy spirit was used to kill an infected.')
-        LANG.AddToLanguage('English', 'ttt2_priest_sidekick', 'The holy spirit was used to kill an sidekick.')
+        LANG.AddToLanguage('English', 'ttt2_priest_necromancer', 'The holy spirit was used to kill a necromancer.')
+        LANG.AddToLanguage('English', 'ttt2_priest_sidekick', 'The holy spirit was used to kill a sidekick.')
         LANG.AddToLanguage('English', 'ttt2_priest_died', 'The holy spirit killed a priest.')
+        LANG.AddToLanguage('English', 'ttt2_priest_priest', 'You can\'t add a priest to the brotherhood.')
         
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_added', 'Es scheint so, als wäre ein weiterer Spieler der Bruderschaft beigetreten.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_died', 'Es scheint so, als wäre ein Bruder gestorben.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_detective', 'Der heilige Geist wurde verwendet um einen Detektiv zu verletzen.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_infected', 'Der heilige Geist wurde verwendet um einen Infizierten zu töten.')
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_necromancer', 'Der heilige Geist wurde verwendet um einen Geisterbeschwörer zu töten.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_sidekick', 'Der heilige Geist wurde verwendet um einen Sidekick zu töten.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_died', 'Der heilige Geist hat einen Priester getötet.')
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_priest', 'Du kannst keinen Priester der Bruderschaft hinzufügen.')
     end)
 
     net.Receive('ttt2_role_priest_msg', function()
@@ -76,6 +80,9 @@ if SERVER then
     util.AddNetworkString('ttt2_role_priest_msg')
 
     function PRIEST_DATA:ShootBrotherhood(ply, attacker)
+        -- player already in brotherhood but no priest
+        if self:IsBrother(ply) and ply:GetSubRole() ~= ROLE_PRIEST then return end
+
         if ply:GetTeam() == TEAM_INNOCENT then
             -- A DETECTIVE/SNIFFER CAN NOT BE CONVERTED AND HE GETS 30 DAMAGE
             if ply:GetSubRole() == ROLE_DETECTIVE or ply:GetSubRole() == ROLE_SNIFFER then
@@ -83,6 +90,10 @@ if SERVER then
                 ply:TakeDamage(GetConVar('ttt_pri_damage_dete'):GetInt(), attacker, inflictor)
 
                 self:SendMessage('ttt2_priest_detective')
+
+            -- PRIESTS CAN'T BE ADDED TO THE BROTHERHOOD SINCE THEY ARE ALREADY A PART OF IT
+            elseif ply:GetSubRole() == ROLE_PRIEST then
+                self:SendMessage('ttt2_priest_priest')
 
             -- INNOCENT PLAYERS ARE THE ONLY ONES TO BE CONVERTED BY THE HOLY DEAGLE
             else
@@ -103,6 +114,13 @@ if SERVER then
             ply:TakeDamage(250, attacker, inflictor)
 
             self:SendMessage('ttt2_priest_infected')
+
+        -- NECROMANCERS GET KILLED BY THE HOLY DEAGLE
+        elseif ply:GetSubRole() == ROLE_NECROMANCER then
+            local inflictor = ents.Create('weapon_ttt2_holydeagle')
+            ply:TakeDamage(250, attacker, inflictor)
+
+            self:SendMessage('ttt2_priest_necromancer')
 
         -- SIDEKICKS ARE KILLED BY THE HOLY DEAGLE
         elseif ply:GetSubRole() == ROLE_SIDEKICK then
@@ -162,6 +180,24 @@ if SERVER then
         net.Send(player.GetAll())
     end
 
+    function PRIEST_DATA:ChangeBrotherHoodRole(new_role)
+        for _, p in ipairs(player.GetAll()) do
+            if p and IsValid(p) and p:IsPlayer() and p:Alive() and p:IsTerror() and self:IsBrother(p) then
+                p:SetRole(new_role)
+            end
+        end
+        self:ClearBrotherhood()
+    end
+
+    function PRIEST_DATA:ChangeBrotherHoodRoleToInfected(infplayers)
+        for _, p in ipairs(player.GetAll()) do
+            if p and IsValid(p) and p:IsPlayer() and p:Alive() and p:IsTerror() and self:IsBrother(p) then
+                table.insert(infplayers, p)
+            end
+        end
+        self:ClearBrotherhood()
+    end
+
     -- special case for unknown
     hook.Add('PlayerSpawn', 'ttt2_priest_unknown', function(ply)
         if ply:GetSubRole() == ROLE_UNKNOWN and PRIEST_DATA:IsBrother(ply) then 
@@ -180,9 +216,26 @@ if SERVER then
         net.Send(player.GetAll())
     end
 
-    -- a few hooks that reset the brothers and the scoreboard
+    -- a hook that resets the brothers and the scoreboard
     hook.Add('TTTEndRound', 'ttt2_priest_update_scorboard_end', function()
         PRIEST_DATA:ClearBrotherhood()
+    end)
+
+    -- handle special role changes in the combination with the broterhood
+    hook.Add('TTT2UpdateBaserole', 'ttt2_priest_change_roles', function(ply, old, new)
+        if old ~= ROLE_PRIEST then return end
+
+        -- for some rolechanges, the whole brotherhood gets changed too
+        if new == ROLE_SIDEKICK then -- jackal
+            PRIEST_DATA:ChangeBrotherHoodRole(ROLE_SIDEKICK)
+        end
+        if new == ROLE_ZOMBIE then -- necormancer
+            PRIEST_DATA:ChangeBrotherHoodRole(ROLE_ZOMBIE)
+        end
+    end)
+    -- the infected has to be handled differently
+    hook.Add('TTT2InfectedAddGroup', 'ttt2_priest_add_brothers_to_infected', function(brothers) 
+        PRIEST_DATA:ChangeBrotherHoodRoleToInfected(brothers)
     end)
 end
 
