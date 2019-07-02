@@ -82,9 +82,9 @@ function SWEP:PrimaryAttack()
 	local BaseClass = baseclass.Get(self.Base)
 	BaseClass.PrimaryAttack(self)
 
-	timer.Create('ttt2_priest_refill_holy_deagle', GetConVar('ttt_pri_refill_time'):GetInt(), 1, function() RefillHolyDeagle(self) end)
+	timer.Create('ttt2_priest_refill_holy_deagle_' .. tostring(self:EntIndex()), GetConVar('ttt_pri_refill_time_missed'):GetInt(), 1, function() RefillHolyDeagle(self) end)
 	if CLIENT then
-		STATUS:AddTimedStatus('ttt2_role_priest_holy_deagle', GetConVar('ttt_pri_refill_time'):GetInt())
+		STATUS:AddTimedStatus('ttt2_role_priest_holy_deagle', GetConVar('ttt_pri_refill_time_missed'):GetInt())
 	end
 end
 
@@ -100,6 +100,12 @@ if SERVER then
 
 		if weap:GetClass() ~= 'weapon_ttt2_holydeagle' then return end
 
+		-- change refill time
+		timer.Remove('ttt2_priest_refill_holy_deagle_' .. tostring(weap:EntIndex()))
+		timer.Create('ttt2_priest_refill_holy_deagle_' .. tostring(weap:EntIndex()), GetConVar('ttt_pri_refill_time'):GetInt(), 1, function() RefillHolyDeagle(weap) end)
+		STATUS:AddTimedStatus(attacker, 'ttt2_role_priest_holy_deagle', GetConVar('ttt_pri_refill_time'):GetInt())
+
+		-- handle weapon
 		PRIEST_DATA:ShootBrotherhood(ply, attacker)
 		dmginfo:SetDamage(0)
 		return true
