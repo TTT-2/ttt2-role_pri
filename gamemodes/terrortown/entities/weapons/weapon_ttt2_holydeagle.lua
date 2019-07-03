@@ -79,13 +79,13 @@ local function RefillHolyDeagle(swep)
 end
 
 function SWEP:PrimaryAttack()
-	local BaseClass = baseclass.Get(self.Base)
-	BaseClass.PrimaryAttack(self)
-
-	if SERVER then
+	if SERVER and self:Clip1() > 0 then
 		timer.Create('ttt2_priest_refill_holy_deagle_' .. tostring(self:EntIndex()), GetConVar('ttt_pri_refill_time_missed'):GetInt(), 1, function() RefillHolyDeagle(self) end)
 		PRIEST_DATA:SetRechargeIcon(self.Owner, GetConVar('ttt_pri_refill_time_missed'):GetInt())
 	end
+	
+	local BaseClass = baseclass.Get(self.Base)
+	BaseClass.PrimaryAttack(self)
 end
 
 if SERVER then
