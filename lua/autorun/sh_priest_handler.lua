@@ -2,6 +2,8 @@ PRIEST_DATA = {}
 PRIEST_DATA.brotherhood = {}
 
 if CLIENT then
+    PRIEST_DATA.local_priest = {}
+
     hook.Add('Initialize', 'TTTInitPriestMessageLang', function()
         LANG.AddToLanguage('English', 'ttt2_priest_added', 'It seems like a player was added to the brotherhood.')
         LANG.AddToLanguage('English', 'ttt2_priest_brother_died', 'It seems like a brother died.')
@@ -11,6 +13,7 @@ if CLIENT then
         LANG.AddToLanguage('English', 'ttt2_priest_sidekick', 'The holy spirit was used to kill a sidekick.')
         LANG.AddToLanguage('English', 'ttt2_priest_died', 'The holy spirit killed a priest.')
         LANG.AddToLanguage('English', 'ttt2_priest_priest', 'You can\'t add a priest to the brotherhood.')
+        LANG.AddToLanguage('English', 'ttt2_priest_marker', 'It seems like the priest shot a bucket full of color.')
         
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_added', 'Es scheint so, als wäre ein weiterer Spieler der Bruderschaft beigetreten.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_died', 'Es scheint so, als wäre ein Bruder gestorben.')
@@ -20,11 +23,12 @@ if CLIENT then
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_sidekick', 'Der heilige Geist wurde verwendet um einen Sidekick zu töten.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_died', 'Der heilige Geist hat einen Priester getötet.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_priest', 'Du kannst keinen Priester der Bruderschaft hinzufügen.')
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_marker', 'Es scheint so, als habe der Priester einen Farbeimer angeschossens.')
     end)
 
     net.Receive('ttt2_role_priest_msg', function()
         local string_identifier = net.ReadString()
-        if GetConVar('ttt_priest_show_messages'):GetBool() and PRIEST_DATA:IsBrother(LocalPlayer()) then 
+        if GetConVar('ttt_pri_show_messages'):GetBool() and PRIEST_DATA:IsBrother(LocalPlayer()) then 
             MSTACK:AddMessage(LANG.GetTranslation(string_identifier))
         end
     end)
@@ -55,6 +59,13 @@ if CLIENT then
         PRIEST_DATA:UpdateScoreboard()
     end)
 
+    net.Receive('ttt2_role_priest_recharge_icon', function()
+        local time = net.ReadUInt(8)
+        PRIEST_DATA.local_priest.time = CurTime() + time
+
+        STATUS:AddTimedStatus('ttt2_role_priest_holy_deagle', time)
+    end)
+
     hook.Add('TTTScoreboardColumns', 'ttt2_priest_brotherhood_column', function(pnl)
         if not PRIEST_DATA:IsBrother(LocalPlayer()) then return end
         pnl:AddColumn('Brother', function(ply, label)         
@@ -78,6 +89,7 @@ if SERVER then
     util.AddNetworkString('ttt2_role_priest_remove_brother')
     util.AddNetworkString('ttt2_role_priest_clear_brotherhood')
     util.AddNetworkString('ttt2_role_priest_msg')
+    util.AddNetworkString('ttt2_role_priest_recharge_icon')
 
     function PRIEST_DATA:ShootBrotherhood(ply, attacker)
         -- player already in brotherhood but no priest
@@ -128,6 +140,19 @@ if SERVER then
             ply:TakeDamage(250, attacker, inflictor)
 
             self:SendMessage('ttt2_priest_sidekick')
+
+        -- SHOOTING A MARKER ADDS THE COMPLETE BROTHERHOOD TO MARKED PLAYERS
+        elseif ply:GetSubRole() == ROLE_MARKER then
+            local inflictor = ents.Create('weapon_ttt2_holydeagle')
+            ply:TakeDamage(GetConVar('ttt_pri_damage_marker'):GetInt(), attacker, inflictor)
+
+            for _,p in ipairs(player.GetAll()) do
+                if MARKER_DATA and p:IsPlayer() and p:Alive() and p:IsTerror() and self:IsBrother(p) then
+                    MARKER_DATA:SetMarkedPlayer(p)
+                end
+            end
+
+            self:SendMessage('ttt2_priest_marker')
 
         -- ALL OTHER EVIL ROLES KILL THE PRIEST
         else
@@ -180,6 +205,12 @@ if SERVER then
         net.Send(player.GetAll())
     end
 
+    function PRIEST_DATA:SetRechargeIcon(ply, time)
+        net.Start('ttt2_role_priest_recharge_icon')
+        net.WriteUInt(time, 8)
+        net.Send(ply)
+    end
+
     function PRIEST_DATA:ChangeBrotherHoodRole(new_role)
         for _, p in ipairs(player.GetAll()) do
             if p and IsValid(p) and p:IsPlayer() and p:Alive() and p:IsTerror() and self:IsBrother(p) then
@@ -191,7 +222,7 @@ if SERVER then
 
     function PRIEST_DATA:ChangeBrotherHoodRoleToInfected(infplayers)
         for _, p in ipairs(player.GetAll()) do
-            if p and IsValid(p) and p:IsPlayer() and p:Alive() and p:IsTerror() and self:IsBrother(p) then
+            if p:IsPlayer() and p:Alive() and p:IsTerror() and self:IsBrother(p) then
                 table.insert(infplayers, p)
             end
         end

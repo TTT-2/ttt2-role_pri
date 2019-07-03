@@ -82,9 +82,9 @@ function SWEP:PrimaryAttack()
 	local BaseClass = baseclass.Get(self.Base)
 	BaseClass.PrimaryAttack(self)
 
-	timer.Create('ttt2_priest_refill_holy_deagle_' .. tostring(self:EntIndex()), GetConVar('ttt_pri_refill_time_missed'):GetInt(), 1, function() RefillHolyDeagle(self) end)
-	if CLIENT then
-		STATUS:AddTimedStatus('ttt2_role_priest_holy_deagle', GetConVar('ttt_pri_refill_time_missed'):GetInt())
+	if SERVER then
+		timer.Create('ttt2_priest_refill_holy_deagle_' .. tostring(self:EntIndex()), GetConVar('ttt_pri_refill_time_missed'):GetInt(), 1, function() RefillHolyDeagle(self) end)
+		PRIEST_DATA:SetRechargeIcon(self.Owner, GetConVar('ttt_pri_refill_time_missed'):GetInt())
 	end
 end
 
@@ -102,8 +102,10 @@ if SERVER then
 
 		-- change refill time
 		timer.Remove('ttt2_priest_refill_holy_deagle_' .. tostring(weap:EntIndex()))
-		timer.Create('ttt2_priest_refill_holy_deagle_' .. tostring(weap:EntIndex()), GetConVar('ttt_pri_refill_time'):GetInt(), 1, function() RefillHolyDeagle(weap) end)
-		STATUS:AddTimedStatus(attacker, 'ttt2_role_priest_holy_deagle', GetConVar('ttt_pri_refill_time'):GetInt())
+		timer.Simple(0.05, function() -- a time can't be added instantly after removing it
+			timer.Create('ttt2_priest_refill_holy_deagle_' .. tostring(weap:EntIndex()), GetConVar('ttt_pri_refill_time'):GetInt(), 1, function() RefillHolyDeagle(weap) end)
+			PRIEST_DATA:SetRechargeIcon(attacker, GetConVar('ttt_pri_refill_time'):GetInt())
+		end)
 
 		-- handle weapon
 		PRIEST_DATA:ShootBrotherhood(ply, attacker)
