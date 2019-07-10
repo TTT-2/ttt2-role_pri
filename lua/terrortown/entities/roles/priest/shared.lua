@@ -77,8 +77,10 @@ if SERVER then
         end
     end)
    
-    hook.Add('PlayerSpawn', 'TTT2PriestGiveHolyDeagle_PlayerSpawn', function(ply) -- called on player respawn
-        if ply:GetSubRole() ~= ROLE_PRIEST then return end
-        InitRolePriest(ply)
+	hook.Add('PlayerSpawn', 'TTT2PriestGiveHolyDeagle_PlayerSpawn', function(ply) -- called on player respawn
+		timer.Simple(0.5, function()
+			if ply:GetSubRole() ~= ROLE_PRIEST then return end
+			InitRolePriest(ply)
+		end)
     end)
 end

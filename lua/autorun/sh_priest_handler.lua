@@ -23,7 +23,7 @@ if CLIENT then
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_sidekick', 'Der heilige Geist wurde verwendet um einen Sidekick zu töten.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_died', 'Der heilige Geist hat einen Priester getötet.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_priest', 'Du kannst keinen Priester der Bruderschaft hinzufügen.')
-        LANG.AddToLanguage('Deutsch', 'ttt2_priest_marker', 'Es scheint so, als habe der Priester einen Farbeimer angeschossens.')
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_marker', 'Es scheint so, als habe der Priester einen Farbeimer angeschossen.')
     end)
 
     net.Receive('ttt2_role_priest_msg', function()

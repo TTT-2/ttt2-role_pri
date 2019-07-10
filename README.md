@@ -2,7 +2,7 @@
 
 The priest plays in the innocent team and his role is hidden like most other roles too. He has one very powerful tool: the holy deagle. With the use of said tool, he can create a powerful brotherhood of innocent players. Players inside the brotherhood see each other in the scoreboard. But he has to be careful, there are a few things to keep in mind:
 
-- most innocent players are added to the brotherhood, except detectives and sniffers since it is to easy to confirm them
+- most innocent players are added to the brotherhood, except detectives and sniffers since it is too easy to confirm them
 - shooting a detective or sniffer with the holy deagle deals 30 damage to them
 - shooting an infected host or necromancer kills the infected host or necromancer, the same goes for sidekicks
 - shooting other evil roles kills the priest while still damaging them like detectives
