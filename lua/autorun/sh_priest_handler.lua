@@ -14,6 +14,9 @@ if CLIENT then
         LANG.AddToLanguage('English', 'ttt2_priest_died', 'The holy spirit killed a priest.')
         LANG.AddToLanguage('English', 'ttt2_priest_priest', 'You can\'t add a priest to the brotherhood.')
         LANG.AddToLanguage('English', 'ttt2_priest_marker', 'It seems like the priest shot a bucket full of color.')
+        LANG.AddToLanguage('English', 'ttt2_priest_brother_jackal', 'Shooting the priest converted the whole brotherhood to sidekicks.')
+        LANG.AddToLanguage('English', 'ttt2_priest_brother_necromancer', 'Reviving the priest as a zombie converted the whole brotherhood to zombies.')
+        LANG.AddToLanguage('English', 'ttt2_priest_brother_infected', 'Killing the priest converted the whole brotherhood to infected.')
         
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_added', 'Es scheint so, als wäre ein weiterer Spieler der Bruderschaft beigetreten.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_died', 'Es scheint so, als wäre ein Bruder gestorben.')
@@ -24,6 +27,9 @@ if CLIENT then
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_died', 'Der heilige Geist hat einen Priester getötet.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_priest', 'Du kannst keinen Priester der Bruderschaft hinzufügen.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_marker', 'Es scheint so, als habe der Priester einen Farbeimer angeschossen.')
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_jackal', 'Durch das Anschießen des Priesters wurde die ganze Bruderschaft zu Sidekicks.')
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_necromancer', 'Durch das Wiederbeleben des Priesters wurde die ganze Bruderschaft zu Zombies.')
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_infected', 'Durch das Töten des Priesters wurde die ganze Bruderschaft zu Infizierten.')
     end)
 
     net.Receive('ttt2_role_priest_msg', function()
@@ -211,10 +217,10 @@ if SERVER then
         net.Send(ply)
     end
 
-    function PRIEST_DATA:ChangeBrotherHoodRole(new_role)
+    function PRIEST_DATA:ChangeBrotherHoodRole(new_role, new_team)
         for _, p in ipairs(player.GetAll()) do
             if p and IsValid(p) and p:IsPlayer() and p:Alive() and p:IsTerror() and self:IsBrother(p) then
-                p:SetRole(new_role)
+                p:SetRole(new_role, new_team)
             end
         end
         self:ClearBrotherhood()
@@ -224,6 +230,20 @@ if SERVER then
         for _, p in ipairs(player.GetAll()) do
             if p:IsPlayer() and p:Alive() and p:IsTerror() and self:IsBrother(p) then
                 table.insert(infplayers, p)
+            end
+        end
+        self:ClearBrotherhood()
+    end
+
+    function PRIEST_DATA:ChangeBrotherHoodRoleToSidekick(siki_host)
+        for _, p in ipairs(player.GetAll()) do
+            if p and IsValid(p) and p:IsPlayer() and p:Alive() and p:IsTerror() and self:IsBrother(p) then
+                if p:GetSubRole() ~= ROLE_JACKAL then -- do not convert jackals to sidekicks!
+                    AddSidekick(p, siki_host)
+                    timer.Simple(0.1, function()
+                        SendFullStateUpdate()
+                    end)
+                end
             end
         end
         self:ClearBrotherhood()
@@ -258,14 +278,17 @@ if SERVER then
 
         -- for some rolechanges, the whole brotherhood gets changed too
         if new == ROLE_SIDEKICK then -- jackal
-            PRIEST_DATA:ChangeBrotherHoodRole(ROLE_SIDEKICK)
+            PRIEST_DATA:SendMessage('ttt2_priest_brother_jackal')
+            PRIEST_DATA:ChangeBrotherHoodRoleToSidekick(ply:GetNWEntity("binded_sidekick", nil))
         end
         if new == ROLE_ZOMBIE then -- necormancer
-            PRIEST_DATA:ChangeBrotherHoodRole(ROLE_ZOMBIE)
+            PRIEST_DATA:SendMessage('ttt2_priest_brother_necromancer')
+            PRIEST_DATA:ChangeBrotherHoodRole(ROLE_ZOMBIE, TEAM_NECROMANCER)
         end
     end)
     -- the infected has to be handled differently
     hook.Add('TTT2InfectedAddGroup', 'ttt2_priest_add_brothers_to_infected', function(brothers) 
+        PRIEST_DATA:SendMessage('ttt2_priest_brother_infected')
         PRIEST_DATA:ChangeBrotherHoodRoleToInfected(brothers)
     end)
 end
@@ -273,6 +296,6 @@ end
 function PRIEST_DATA:IsBrother(ply)
     if not ply or not IsValid(ply) or not ply:IsPlayer() then return false end
     if not (ply:SteamID64() or ply:EntIndex()) then return false end
-
+    
     return self.brotherhood[tostring(ply:SteamID64() or ply:EntIndex())] or false
 end
