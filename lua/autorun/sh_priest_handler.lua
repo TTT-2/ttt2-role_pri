@@ -73,7 +73,12 @@ if CLIENT then
     end)
 
     hook.Add('TTTScoreboardColumns', 'ttt2_priest_brotherhood_column', function(pnl)
-        if not PRIEST_DATA:IsBrother(LocalPlayer()) then return end
+        local client = LocalPlayer()
+
+        -- this prevention is needed when a player connects in the moment that a round starts
+        if not client or not IsValid(client) or not client:IsPlayer() then return end
+
+        if not PRIEST_DATA:IsBrother(client) then return end
         pnl:AddColumn('Brother', function(ply, label)         
             if PRIEST_DATA:IsBrother(ply) then
                 return 'yes'
