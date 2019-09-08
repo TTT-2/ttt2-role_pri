@@ -66,28 +66,24 @@ end)
 if SERVER then
 	local function InitRolePriest(ply)
 		ply:GiveEquipmentWeapon('weapon_ttt2_holydeagle')
-		PRIEST_DATA:AddToBrotherhood(ply)
+		timer.Simple(0.25, function()
+			PRIEST_DATA:AddToBrotherhood(ply)
+		end)
 	end
 	
 	local function DeinitRolePriest(ply)
 		ply:StripWeapon('weapon_ttt2_holydeagle')
 	end
  
-    hook.Add('TTT2UpdateSubrole', 'TTT2PriestGiveHolyDeagle_UpdateSubtole', function(ply, old, new) -- called on normal role set
-        if new == ROLE_PRIEST then
-            InitRolePriest(ply)
-		elseif old == ROLE_PRIEST then
-			DeinitRolePriest(ply)
-        end
-    end)
-   
-	hook.Add('PlayerSpawn', 'TTT2PriestGiveHolyDeagle_PlayerSpawn', function(ply) -- called on player respawn
-		-- this is an ugly workaround, since on calling of the player respawn hook, the player can not yet receive items
-		timer.Simple(0.1, function()
-			if GetRoundState() ~= ROUND_ACTIVE then return end
-			if ply:GetSubRole() ~= ROLE_PRIEST then return end
+	hook.Add('TTT2GiveRoleLoadout', 'ttt2_priest_loadout_give', function(ply, isRoleChange, role, team)
+		if role ~= ROLE_PRIEST then return end
 
-			InitRolePriest(ply)
-		end)
-    end)
+		InitRolePriest(ply)
+	end)
+
+	hook.Add('TTT2RemoveRoleLoadout', 'ttt2_priest_loadout_remove', function(ply, isRoleChange, role, team)
+		if role ~= ROLE_PRIEST then return end
+
+		DeinitRolePriest(ply)
+	end)
 end
