@@ -36,8 +36,8 @@ ROLE.conVarData = {
 }
 
 hook.Add('TTT2FinishedLoading', 'PriestInitT', function()
-
 	if CLIENT then
+		-- Role specific language elements
 		LANG.AddToLanguage('English', PRIEST.name, 'Priest')
 		LANG.AddToLanguage('English', 'info_popup_' .. PRIEST.name,
 			[[You are the Priest!
@@ -48,9 +48,6 @@ hook.Add('TTT2FinishedLoading', 'PriestInitT', function()
 		LANG.AddToLanguage('English', 'ttt2_desc_' .. PRIEST.name, [[The Priest needs to win with the innocents!]])
 		LANG.AddToLanguage('English', 'credit_' .. PRIEST.abbr .. '_all', 'Priests, you have been awarded {num} equipment credit(s) for your performance.')
 
-		---------------------------------
-
-		-- maybe this language as well...
 		LANG.AddToLanguage('Deutsch', PRIEST.name, 'Priester')
 		LANG.AddToLanguage('Deutsch', 'info_popup_' .. PRIEST.name,
 			[[Du bist ein Priester!
@@ -63,27 +60,15 @@ hook.Add('TTT2FinishedLoading', 'PriestInitT', function()
 	end
 end) 
 
-if SERVER then
-	local function InitRolePriest(ply)
+if SERVER then 
+	-- Give Loadout on respawn and rolechange	
+	function ROLE:GiveRoleLoadout(ply, isRoleChange)
 		ply:GiveEquipmentWeapon('weapon_ttt2_holydeagle')
-		timer.Simple(0.25, function()
-			PRIEST_DATA:AddToBrotherhood(ply)
-		end)
+		PRIEST_DATA:AddToBrotherhood(ply)
 	end
-	
-	local function DeinitRolePriest(ply)
+
+	-- Remove Loadout on death and rolechange
+	function ROLE:RemoveRoleLoadout(ply, isRoleChange)
 		ply:StripWeapon('weapon_ttt2_holydeagle')
 	end
- 
-	hook.Add('TTT2GiveRoleLoadout', 'ttt2_priest_loadout_give', function(ply, isRoleChange, role, team)
-		if role ~= ROLE_PRIEST then return end
-
-		InitRolePriest(ply)
-	end)
-
-	hook.Add('TTT2RemoveRoleLoadout', 'ttt2_priest_loadout_remove', function(ply, isRoleChange, role, team)
-		if role ~= ROLE_PRIEST then return end
-
-		DeinitRolePriest(ply)
-	end)
 end

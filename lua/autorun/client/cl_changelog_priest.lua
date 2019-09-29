@@ -27,7 +27,7 @@ hook.Add("TTT2AddChange", "TTT2_role_priest_changelog", function()
     AddChange("TTT2 Role Priest - v1.2", [[
         <ul>
             <li>Fixed scoreboard sometimes causing erros</li>
-            <li>Improved loadout by using the new loadout hooks, prevents wrong loadout when a player was a marker in the previous round and other item raceconditions</li>
+            <li>Improved loadout by using other hooks, prevents wrong loadout when a player was a marker in the previous round</li>
         </ul>
-    ]], os.time({year = 2019, month = 09, day = 08}))
+    ]], os.time({year = 2019, month = 09, day = 11}))
 end)
