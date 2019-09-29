@@ -72,6 +72,14 @@ if CLIENT then
         STATUS:AddTimedStatus('ttt2_role_priest_holy_deagle', time)
     end)
 
+    net.Receive('ttt2_role_priest_corpse_update', function()
+        local ply = net.ReadEntity()
+
+        if not ply or not ply:IsPlayer() then return end
+
+        ply.was_brother = net.ReadBool()
+    end)
+
     hook.Add('TTTScoreboardColumns', 'ttt2_priest_brotherhood_column', function(pnl)
         local client = LocalPlayer()
 
@@ -101,6 +109,7 @@ if SERVER then
     util.AddNetworkString('ttt2_role_priest_clear_brotherhood')
     util.AddNetworkString('ttt2_role_priest_msg')
     util.AddNetworkString('ttt2_role_priest_recharge_icon')
+    util.AddNetworkString('ttt2_role_priest_corpse_update')
 
     function PRIEST_DATA:ShootBrotherhood(ply, attacker)
         -- player already in brotherhood but no priest
@@ -174,6 +183,25 @@ if SERVER then
         end
     end
 
+    function PRIEST_DATA:PrepareCorpseOnDeath(ply)
+        if not ply or not ply:IsPlayer() then return end
+        if not self:IsBrother(ply) then return end
+
+        net.Start('ttt2_role_priest_corpse_update')
+        net.WriteEntity(ply)
+        net.WriteBool(true)
+        net.Broadcast()
+    end
+
+    function PRIEST_DATA:ResetCorpseOnSpawn(ply)
+        if not ply or not ply:IsPlayer() then return end
+
+        net.Start('ttt2_role_priest_corpse_update')
+        net.WriteEntity(ply)
+        net.WriteBool(false)
+        net.Broadcast()
+    end
+
     function PRIEST_DATA:BrotherDies(ply)
         -- unknown players keep their status
         if ply:GetSubRole() == ROLE_UNKNOWN then return end
@@ -181,6 +209,7 @@ if SERVER then
         -- only remove if player is in brotherhood
         if not PRIEST_DATA:IsBrother(ply) then return end
 
+        self:PrepareCorpseOnDeath(ply)
         self:RemoveFromBrotherhood(ply)
     end
 
@@ -254,11 +283,13 @@ if SERVER then
         self:ClearBrotherhood()
     end
 
-    -- special case for unknown
     hook.Add('PlayerSpawn', 'ttt2_priest_unknown', function(ply)
+        -- special case for unknown
         if ply:GetSubRole() == ROLE_UNKNOWN and PRIEST_DATA:IsBrother(ply) then 
             timer.Create('ttt2_priest_unknown_give_brotherhood', 0.05, 1, function() STATUS:AddStatus(ply, 'ttt2_role_priest_brotherhood') end)
         end
+
+        PRIEST_DATA:ResetCorpseOnSpawn(ply)
     end)
 
     -- death of player in brotherhood

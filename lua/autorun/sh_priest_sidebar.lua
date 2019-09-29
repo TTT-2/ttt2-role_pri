@@ -1,6 +1,8 @@
 if SERVER then
     resource.AddFile('materials/vgui/ttt/hud_icon_brotherhood.png')
     resource.AddFile('materials/vgui/ttt/hud_icon_holy_deagle.png')
+    
+    resource.AddFile('materials/vgui/ttt/player_brother.png')
 end
 
 if CLIENT then

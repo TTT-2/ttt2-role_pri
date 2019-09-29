@@ -57,8 +57,25 @@ hook.Add('TTT2FinishedLoading', 'PriestInitT', function()
 		LANG.AddToLanguage('Deutsch', 'target_' .. PRIEST.name, 'Priester')
 		LANG.AddToLanguage('Deutsch', 'ttt2_desc_' .. PRIEST.name, [[Der Priester gewinnt zusammen mit den Unschuldigen!]])
 		LANG.AddToLanguage('Deutsch', 'credit_' .. PRIEST.abbr .. '_all', 'Priester, dir wurde(n) {num} Ausrüstungs-Credit(s) für deine Leistung gegeben.')
+
+		-- other role language elements
+		LANG.AddToLanguage("English", "ttt2_priest_was_priest", "This player appears to be a member of the brotherhood.")
+		LANG.AddToLanguage("Deutsch", "ttt2_priest_was_priest", "Dieser Spieler scheint ein Mitglied der Bruderschaft zu sein.")
 	end
 end) 
+
+if CLIENT then
+	hook.Add("TTTBodySearchPopulate", "ttt2_role_priest_add_brotherhood_indicator", function(search, raw)
+		if not raw.owner.was_brother then return end
+
+		local highest_id = 0
+		for _, v in pairs(search) do
+			highest_id = math.max(highest_id, v.p)
+		end
+
+		search.is_brother = {img = "vgui/ttt/player_brother.png", text = LANG.GetTranslation("ttt2_priest_was_priest"), p = highest_id + 1}
+	end)
+end
 
 if SERVER then 
 	-- Give Loadout on respawn and rolechange	
