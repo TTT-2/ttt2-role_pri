@@ -6,25 +6,26 @@ end
 
 ROLE.Base = 'ttt_role_base'
 
-ROLE.color = Color(185, 210, 95, 255)
-ROLE.dkcolor = Color(150, 175, 65, 255)
-ROLE.bgcolor = Color(215, 240, 130, 255)
-ROLE.abbr = 'pri'
-ROLE.surviveBonus = 0 -- bonus multiplier for every survive while another player was killed
-ROLE.scoreKillsMultiplier = 1 -- multiplier for kill of player of another team
-ROLE.scoreTeamKillsMultiplier = -16 -- multiplier for teamkill
-ROLE.preventFindCredits = true
-ROLE.preventKillCredits = true
-ROLE.preventTraitorAloneCredits = true
-ROLE.preventWin = false
-ROLE.unknownTeam = true -- player don't know their teammates
-
 roles.InitCustomTeam(ROLE.name, {
     icon = 'vgui/ttt/dynamic/roles/icon_pri',
-    color = ROLE.color
+    color = Color(185, 210, 95, 255)
 })
 
 function ROLE:PreInitialize()
+	self.color = Color(185, 210, 95, 255)
+	self.dkcolor = Color(150, 175, 65, 255)
+	self.bgcolor = Color(215, 240, 130, 255)
+
+	self.abbr = 'pri'
+	self.surviveBonus = 0
+	self.scoreKillsMultiplier = 1
+	self.scoreTeamKillsMultiplier = -16
+	self.preventFindCredits = true
+	self.preventKillCredits = true
+	self.preventTraitorAloneCredits = true
+	self.preventWin = false
+	self.unknownTeam = true
+
 	self.defaultTeam = TEAM_INNOCENT
 
 	self.conVarData = {
