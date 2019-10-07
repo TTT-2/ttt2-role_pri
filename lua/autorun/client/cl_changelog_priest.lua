@@ -23,11 +23,19 @@ hook.Add("TTT2AddChange", "TTT2_role_priest_changelog", function()
             <li>Fixed priest - sidekick/jackal interaction</li>
         </ul>
     ]], os.time({year = 2019, month = 08, day = 01}))
-    
+
     AddChange("TTT2 Role Priest - v1.2", [[
         <ul>
             <li>Fixed scoreboard sometimes causing erros</li>
             <li>Improved loadout by using other hooks, prevents wrong loadout when a player was a marker in the previous round</li>
         </ul>
     ]], os.time({year = 2019, month = 09, day = 11}))
+
+    AddChange("TTT2 Role Priest - v1.3", [[
+        <ul>
+            <li>Using new loadout functions that allow item giving without raceconditions</li>
+            <li>Giving 10 armor points to the priest</li>
+            <li>Added "was brother" to the body search window</li>
+        </ul>
+    ]], os.time({year = 2019, month = 10, day = 07}))
 end)
