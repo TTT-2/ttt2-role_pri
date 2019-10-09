@@ -72,6 +72,7 @@ end
 
 if CLIENT then
 	hook.Add("TTTBodySearchPopulate", "ttt2_role_priest_add_brotherhood_indicator", function(search, raw)
+		if not raw.owner then return end
 		if not raw.owner.was_brother then return end
 
 		local highest_id = 0
