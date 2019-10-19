@@ -111,6 +111,22 @@ if SERVER then
     util.AddNetworkString('ttt2_role_priest_recharge_icon')
     util.AddNetworkString('ttt2_role_priest_corpse_update')
 
+    local function InstantDamage(ply, damage, attacker, inflictor)
+        local dmg = DamageInfo()
+
+        dmg:SetDamage(damage or 2000)
+        dmg:SetAttacker(attacker or ply)
+        dmg:SetDamageForce(ply:GetAimVector())
+        dmg:SetDamagePosition(ply:GetPos())
+        dmg:SetDamageType(DMG_SLASH)
+        
+        if inflictor then
+            dmg:SetInflictor(inflictor)
+        end
+
+        ply:TakeDamageInfo(dmg)
+    end
+
     function PRIEST_DATA:ShootBrotherhood(ply, attacker)
         -- player already in brotherhood but no priest
         if self:IsBrother(ply) and ply:GetSubRole() ~= ROLE_PRIEST then return end
@@ -119,7 +135,7 @@ if SERVER then
             -- A DETECTIVE/SNIFFER CAN NOT BE CONVERTED AND HE GETS 30 DAMAGE
             if ply:GetSubRole() == ROLE_DETECTIVE or ply:GetSubRole() == ROLE_SNIFFER then
                 local inflictor = ents.Create('weapon_ttt2_holydeagle')
-                ply:TakeDamage(GetConVar('ttt_pri_damage_dete'):GetInt(), attacker, inflictor)
+                InstantDamage(ply, GetConVar('ttt_pri_damage_dete'):GetInt(), attacker, ents.Create('weapon_ttt2_holydeagle'))
 
                 self:SendMessage('ttt2_priest_detective')
 
@@ -142,29 +158,25 @@ if SERVER then
 
         -- INFECTED PLAYERS GET KILLED BY THE HOLY DEAGLE
         elseif ply:GetTeam() == TEAM_INFECTED then
-            local inflictor = ents.Create('weapon_ttt2_holydeagle')
-            ply:TakeDamage(250, attacker, inflictor)
+            InstantDamage(ply, 2000, attacker, ents.Create('weapon_ttt2_holydeagle'))
 
             self:SendMessage('ttt2_priest_infected')
 
         -- NECROMANCERS GET KILLED BY THE HOLY DEAGLE
         elseif ply:GetSubRole() == ROLE_NECROMANCER then
-            local inflictor = ents.Create('weapon_ttt2_holydeagle')
-            ply:TakeDamage(250, attacker, inflictor)
+            InstantDamage(ply, 2000, attacker, ents.Create('weapon_ttt2_holydeagle'))
 
             self:SendMessage('ttt2_priest_necromancer')
 
         -- SIDEKICKS ARE KILLED BY THE HOLY DEAGLE
         elseif ply:GetSubRole() == ROLE_SIDEKICK then
-            local inflictor = ents.Create('weapon_ttt2_holydeagle')
-            ply:TakeDamage(250, attacker, inflictor)
+            InstantDamage(ply, 2000, attacker, ents.Create('weapon_ttt2_holydeagle'))
 
             self:SendMessage('ttt2_priest_sidekick')
 
         -- SHOOTING A MARKER ADDS THE COMPLETE BROTHERHOOD TO MARKED PLAYERS
         elseif ply:GetSubRole() == ROLE_MARKER then
-            local inflictor = ents.Create('weapon_ttt2_holydeagle')
-            ply:TakeDamage(GetConVar('ttt_pri_damage_marker'):GetInt(), attacker, inflictor)
+            InstantDamage(ply, GetConVar('ttt_pri_damage_marker'):GetInt(), attacker, ents.Create('weapon_ttt2_holydeagle'))
 
             for _,p in ipairs(player.GetAll()) do
                 if MARKER_DATA and p:IsPlayer() and p:Alive() and p:IsTerror() and self:IsBrother(p) then
@@ -176,8 +188,7 @@ if SERVER then
 
         -- ALL OTHER EVIL ROLES KILL THE PRIEST
         else
-            local inflictor = ents.Create('weapon_ttt2_holydeagle')
-            attacker:TakeDamage(250, attacker, inflictor)
+            InstantDamage(attacker, 2000, ply, ents.Create('weapon_ttt2_holydeagle'))
 
             self:SendMessage('ttt2_priest_died')
         end
