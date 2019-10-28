@@ -17,6 +17,7 @@ if CLIENT then
         LANG.AddToLanguage('English', 'ttt2_priest_brother_jackal', 'Shooting the priest converted the whole brotherhood to sidekicks.')
         LANG.AddToLanguage('English', 'ttt2_priest_brother_necromancer', 'Reviving the priest as a zombie converted the whole brotherhood to zombies.')
         LANG.AddToLanguage('English', 'ttt2_priest_brother_infected', 'Killing the priest converted the whole brotherhood to infected.')
+        LANG.AddToLanguage('English', 'ttt2_priest_player_brother', '(PLAYER IS IN BROTHERHOOD)')
         
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_added', 'Es scheint so, als wäre ein weiterer Spieler der Bruderschaft beigetreten.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_died', 'Es scheint so, als wäre ein Bruder gestorben.')
@@ -30,6 +31,7 @@ if CLIENT then
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_jackal', 'Durch das Anschießen des Priesters wurde die ganze Bruderschaft zu Sidekicks.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_necromancer', 'Durch das Wiederbeleben des Priesters wurde die ganze Bruderschaft zu Zombies.')
         LANG.AddToLanguage('Deutsch', 'ttt2_priest_brother_infected', 'Durch das Töten des Priesters wurde die ganze Bruderschaft zu Infizierten.')
+        LANG.AddToLanguage('Deutsch', 'ttt2_priest_player_brother', '(SPIELER IST IN BRUDERSCHAFT)')
     end)
 
     net.Receive('ttt2_role_priest_msg', function()
