@@ -1,8 +1,10 @@
 local material_in_brotherhood = Material('vgui/ttt/dynamic/roles/is_in_brotherhood')
-local color_player_in_brotherhood = Color(PRIEST.bgcolor.r, PRIEST.bgcolor.g, PRIEST.bgcolor.b, 75)
 
 -- handle looking at sodas
 hook.Add('TTTRenderEntityInfo', 'ttt2_priest_highlight_players', function(data, params)
+    -- while client is setting up, ignore missing PRIEST
+    if not PRIEST then return end
+
     local client = LocalPlayer()
     local obsTgt = client:GetObserverTarget()
 
@@ -19,6 +21,6 @@ hook.Add('TTTRenderEntityInfo', 'ttt2_priest_highlight_players', function(data, 
 
     params.displayInfo.icon[#params.displayInfo.icon + 1] = {
         material = material_in_brotherhood,
-        color = color_player_in_brotherhood
+        color = Color(PRIEST.bgcolor.r, PRIEST.bgcolor.g, PRIEST.bgcolor.b, 75)
     }
 end)
