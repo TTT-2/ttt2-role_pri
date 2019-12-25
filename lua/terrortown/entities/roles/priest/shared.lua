@@ -7,15 +7,8 @@ end
 
 ROLE.Base = 'ttt_role_base'
 
-roles.InitCustomTeam(ROLE.name, {
-    icon = 'vgui/ttt/dynamic/roles/icon_pri',
-    color = Color(185, 210, 95, 255)
-})
-
 function ROLE:PreInitialize()
 	self.color = Color(185, 210, 95, 255)
-	self.dkcolor = Color(150, 175, 65, 255)
-	self.bgcolor = Color(215, 240, 130, 255)
 
 	self.abbr = 'pri'
 	self.surviveBonus = 0
@@ -50,7 +43,7 @@ function ROLE:Initialize()
 			[[You are the Priest!
 			Use your holy deagle to convert players into your brotherhood. But be careful, only innocent players behave well.]])
 		LANG.AddToLanguage('English', 'body_found_' .. PRIEST.abbr, 'They were a Priest.')
-        LANG.AddToLanguage('English', 'search_role_' .. PRIEST.abbr, 'This person was a Priest!')
+		LANG.AddToLanguage('English', 'search_role_' .. PRIEST.abbr, 'This person was a Priest!')
 		LANG.AddToLanguage('English', 'target_' .. PRIEST.name, 'Priest')
 		LANG.AddToLanguage('English', 'ttt2_desc_' .. PRIEST.name, [[The Priest needs to win with the innocents!]])
 		LANG.AddToLanguage('English', 'credit_' .. PRIEST.abbr .. '_all', 'Priests, you have been awarded {num} equipment credit(s) for your performance.')
@@ -66,13 +59,13 @@ function ROLE:Initialize()
 		LANG.AddToLanguage('Deutsch', 'credit_' .. PRIEST.abbr .. '_all', 'Priester, dir wurde(n) {num} Ausrüstungs-Credit(s) für deine Leistung gegeben.')
 
 		-- other role language elements
-		LANG.AddToLanguage("English", "ttt2_priest_was_priest", "This player appears to be a member of the brotherhood.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_was_priest", "Dieser Spieler scheint ein Mitglied der Bruderschaft zu sein.")
+		LANG.AddToLanguage('English', 'ttt2_priest_was_priest', 'This player appears to be a member of the brotherhood.')
+		LANG.AddToLanguage('Deutsch', 'ttt2_priest_was_priest', 'Dieser Spieler scheint ein Mitglied der Bruderschaft zu sein.')
 	end
 end
 
 if CLIENT then
-	hook.Add("TTTBodySearchPopulate", "ttt2_role_priest_add_brotherhood_indicator", function(search, raw)
+	hook.Add('TTTBodySearchPopulate', 'ttt2_role_priest_add_brotherhood_indicator', function(search, raw)
 		if not raw.owner then return end
 		if not raw.owner.was_brother then return end
 
@@ -81,11 +74,11 @@ if CLIENT then
 			highest_id = math.max(highest_id, v.p)
 		end
 
-		search.is_brother = {img = "vgui/ttt/player_brother.png", text = LANG.GetTranslation("ttt2_priest_was_priest"), p = highest_id + 1}
+		search.is_brother = {img = 'vgui/ttt/player_brother.png', text = LANG.GetTranslation('ttt2_priest_was_priest'), p = highest_id + 1}
 	end)
 end
 
-if SERVER then 
+if SERVER then
 	-- Give Loadout on respawn and rolechange	
 	function ROLE:GiveRoleLoadout(ply, isRoleChange)
 		ply:GiveEquipmentWeapon('weapon_ttt2_holydeagle')
