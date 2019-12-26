@@ -9,7 +9,7 @@ hook.Add('TTTRenderEntityInfo', 'ttt2_priest_highlight_players', function(data, 
 	if not data.ent:IsPlayer() then return end
 
 	-- only add text to brotherhood players
-	if not PRIEST_DATA:IsBrother(data.ent) then return end
+	if not PRIEST_DATA:IsBrother(data.ent) or not PRIEST_DATA:IsBrother(LocalPlayer()) then return end
 
 	params.displayInfo.desc[#params.displayInfo.desc + 1] = {
 		text = LANG.GetTranslation('ttt2_priest_player_brother'),
