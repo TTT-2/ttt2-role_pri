@@ -13,11 +13,11 @@ hook.Add('TTTRenderEntityInfo', 'ttt2_priest_highlight_players', function(data, 
 
 	params.displayInfo.desc[#params.displayInfo.desc + 1] = {
 		text = LANG.GetTranslation('ttt2_priest_player_brother'),
-		color = PRIEST.bgcolor
+		color = PRIEST.dkcolor
 	}
 
 	params.displayInfo.icon[#params.displayInfo.icon + 1] = {
 		material = material_in_brotherhood,
-		color = Color(PRIEST.bgcolor.r, PRIEST.bgcolor.g, PRIEST.bgcolor.b, 75)
+		color = PRIEST.dkcolor
 	}
 end)
