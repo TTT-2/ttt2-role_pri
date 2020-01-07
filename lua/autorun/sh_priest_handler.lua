@@ -341,8 +341,8 @@ if SERVER then
 end
 
 function PRIEST_DATA:IsBrother(ply)
-	if not ply or not IsValid(ply) or not ply:IsPlayer() then return false end
-	if not (ply:SteamID64() or ply:EntIndex()) then return false end
+	if not IsValid(ply) or not ply:IsPlayer() then return false end
+	if not isfunction(ply.SteamID64) and not isfunction(ply.EntIndex) then return false end
 
 	return self.brotherhood[tostring(ply:SteamID64() or ply:EntIndex())] or false
 end
