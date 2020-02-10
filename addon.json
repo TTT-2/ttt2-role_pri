@@ -1,0 +1,11 @@
+{
+	"title"		:	"[TTT2] Priest",
+	"type"		:	"ServerContent",
+    "tags"		:	[ "roleplay", "fun" ],
+    "ignore"    : [
+        ".git/*",
+        ".gitignore",
+        "README.md",
+		"ttt2-role_pri.jpg"
+    ]
+}
