@@ -83,7 +83,7 @@ function SWEP:PrimaryAttack()
 		timer.Create('ttt2_priest_refill_holy_deagle_' .. tostring(self:EntIndex()), GetConVar('ttt_pri_refill_time_missed'):GetInt(), 1, function() RefillHolyDeagle(self) end)
 		PRIEST_DATA:SetRechargeIcon(self.Owner, GetConVar('ttt_pri_refill_time_missed'):GetInt())
 	end
-	
+
 	local BaseClass = baseclass.Get(self.Base)
 	BaseClass.PrimaryAttack(self)
 end
@@ -91,6 +91,7 @@ end
 if SERVER then
 	hook.Add('ScalePlayerDamage', 'HolyHitReg', function(ply, hitgroup, dmginfo)
 		local attacker = dmginfo:GetAttacker()
+
 		if GetRoundState() ~= ROUND_ACTIVE or not attacker or not IsValid(attacker)
 			or not attacker:IsPlayer() or not IsValid(attacker:GetActiveWeapon()) then return end
 

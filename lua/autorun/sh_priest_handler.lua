@@ -263,12 +263,15 @@ if SERVER then
 		net.Send(ply)
 	end
 
-	function PRIEST_DATA:ChangeBrotherHoodRole(new_role, new_team)
+	function PRIEST_DATA:ChangeBrotherHoodRoleNecromancer()
 		for _, p in ipairs(player.GetAll()) do
-			if p and IsValid(p) and p:IsPlayer() and p:Alive() and p:IsTerror() and self:IsBrother(p) then
-				p:SetRole(new_role, new_team)
-			end
+			if not IsValid(p) or not p:IsPlayer() or not p:Alive() or not p:IsTerror() or not self:IsBrother(p) then continue end
+
+			if p:GetSubRole() == ROLE_NECROMANCER or p:GetSubRole() == ROLE_ZOMBIE then continue end
+
+			AddZombie(p)
 		end
+
 		self:ClearBrotherhood()
 	end
 
@@ -286,6 +289,7 @@ if SERVER then
 			-- do not convert jackals to sidekicks!
 			if p and IsValid(p) and p:IsPlayer() and p:Alive() and p:IsTerror() and self:IsBrother(p) and p:GetSubRole() ~= ROLE_JACKAL then
 				AddSidekick(p, siki_host)
+
 				timer.Simple(0.1, function()
 					SendFullStateUpdate()
 				end)
@@ -320,7 +324,7 @@ if SERVER then
 	end)
 
 	-- handle special role changes in the combination with the broterhood
-	hook.Add('TTT2UpdateBaserole', 'ttt2_priest_change_roles', function(ply, old, new)
+	hook.Add('TTT2UpdateSubrole', 'ttt2_priest_change_roles', function(ply, old, new)
 		if old ~= ROLE_PRIEST then return end
 
 		-- for some rolechanges, the whole brotherhood gets changed too
@@ -328,11 +332,13 @@ if SERVER then
 			PRIEST_DATA:SendMessage('ttt2_priest_brother_jackal')
 			PRIEST_DATA:ChangeBrotherHoodRoleToSidekick(ply:GetNWEntity('binded_sidekick', nil))
 		end
+
 		if new == ROLE_ZOMBIE then -- necormancer
 			PRIEST_DATA:SendMessage('ttt2_priest_brother_necromancer')
-			PRIEST_DATA:ChangeBrotherHoodRole(ROLE_ZOMBIE, TEAM_NECROMANCER)
+			PRIEST_DATA:ChangeBrotherHoodRoleNecromancer()
 		end
 	end)
+
 	-- the infected has to be handled differently
 	hook.Add('TTT2InfectedAddGroup', 'ttt2_priest_add_brothers_to_infected', function(brothers)
 		PRIEST_DATA:SendMessage('ttt2_priest_brother_infected')
