@@ -323,6 +323,13 @@ if SERVER then
 		PRIEST_DATA:ClearBrotherhood()
 	end)
 
+	-- clear the recharge timer if a priest changes his team
+	hook.Add('TTT2UpdateSubrole', 'ttt2_priest_clear_recharge', function(ply, old, new)
+		if old ~= ROLE_PRIEST then return end
+
+		STATUS:RemoveStatus(ply, 'ttt2_role_priest_holy_deagle')
+	end)
+
 	-- handle special role changes in the combination with the broterhood
 	hook.Add('TTT2UpdateSubrole', 'ttt2_priest_change_roles', function(ply, old, new)
 		if old ~= ROLE_PRIEST then return end
