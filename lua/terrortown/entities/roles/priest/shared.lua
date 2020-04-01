@@ -57,10 +57,25 @@ function ROLE:Initialize()
 		LANG.AddToLanguage('Deutsch', 'target_' .. PRIEST.name, 'Priester')
 		LANG.AddToLanguage('Deutsch', 'ttt2_desc_' .. PRIEST.name, [[Der Priester gewinnt zusammen mit den Unschuldigen!]])
 		LANG.AddToLanguage('Deutsch', 'credit_' .. PRIEST.abbr .. '_all', 'Priester, dir wurde(n) {num} Ausrüstungs-Credit(s) für deine Leistung gegeben.')
-
+		
+		LANG.AddToLanguage('Italian', PRIEST.name, 'Prete')
+		LANG.AddToLanguage('Italian', 'info_popup_' .. PRIEST.name,
+			[[Sei il prete!
+			Usa la tua deagle benedetta per convertire i player alla tua confraternita. Ma fai attenzione, solo i giocatori innocenti si comporteranno bene.]])
+		LANG.AddToLanguage('Italian', 'body_found_' .. PRIEST.abbr, 'Era un Prete.')
+		LANG.AddToLanguage('Italian', 'search_role_' .. PRIEST.abbr, 'Questa persona era un Prete!')
+		LANG.AddToLanguage('Italian', 'target_' .. PRIEST.name, 'Prete')
+		LANG.AddToLanguage('Italian', 'ttt2_desc_' .. PRIEST.name, [[Il Prete deve vincere con gli innocenti!]])
+		if num == 1 then
+			LANG.AddToLanguage('Italian', 'credit_' .. PRIEST.abbr .. '_all', 'Preti, avete guadagnato {num} credito per la vostra performance.')
+		else
+			LANG.AddToLanguage('Italian', 'credit_' .. PRIEST.abbr .. '_all', 'Preti, avete guadagnato {num} crediti per la vostra performance.')
+		end
+		
 		-- other role language elements
 		LANG.AddToLanguage('English', 'ttt2_priest_was_priest', 'This player appears to be a member of the brotherhood.')
 		LANG.AddToLanguage('Deutsch', 'ttt2_priest_was_priest', 'Dieser Spieler scheint ein Mitglied der Bruderschaft zu sein.')
+		LANG.AddToLanguage('Italian', 'ttt2_priest_was_priest', 'Questo giocatore sembra essere un membro della confraternita.')
 	end
 end
 
