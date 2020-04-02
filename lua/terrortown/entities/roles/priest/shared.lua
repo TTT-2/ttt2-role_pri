@@ -66,11 +66,7 @@ function ROLE:Initialize()
 		LANG.AddToLanguage('Italian', 'search_role_' .. PRIEST.abbr, 'Questa persona era un Prete!')
 		LANG.AddToLanguage('Italian', 'target_' .. PRIEST.name, 'Prete')
 		LANG.AddToLanguage('Italian', 'ttt2_desc_' .. PRIEST.name, [[Il Prete deve vincere con gli innocenti!]])
-		if num == 1 then
-			LANG.AddToLanguage('Italian', 'credit_' .. PRIEST.abbr .. '_all', 'Preti, avete guadagnato {num} credito per la vostra performance.')
-		else
-			LANG.AddToLanguage('Italian', 'credit_' .. PRIEST.abbr .. '_all', 'Preti, avete guadagnato {num} crediti per la vostra performance.')
-		end
+		LANG.AddToLanguage('Italian', 'credit_' .. PRIEST.abbr .. '_all', 'Preti, avete guadagnato {num} credito/i per la vostra performance.')
 		
 		-- other role language elements
 		LANG.AddToLanguage('English', 'ttt2_priest_was_priest', 'This player appears to be a member of the brotherhood.')
