@@ -58,20 +58,20 @@ function ROLE:Initialize()
 		LANG.AddToLanguage('Deutsch', 'ttt2_desc_' .. PRIEST.name, [[Der Priester gewinnt zusammen mit den Unschuldigen!]])
 		LANG.AddToLanguage('Deutsch', 'credit_' .. PRIEST.abbr .. '_all', 'Priester, dir wurde(n) {num} Ausrüstungs-Credit(s) für deine Leistung gegeben.')
 		
-		LANG.AddToLanguage('Italian', PRIEST.name, 'Prete')
-		LANG.AddToLanguage('Italian', 'info_popup_' .. PRIEST.name,
-			[[Sei il prete!
-			Usa la tua deagle benedetta per convertire i player alla tua confraternita. Ma fai attenzione, solo i giocatori innocenti si comporteranno bene.]])
-		LANG.AddToLanguage('Italian', 'body_found_' .. PRIEST.abbr, 'Era un Prete.')
-		LANG.AddToLanguage('Italian', 'search_role_' .. PRIEST.abbr, 'Questa persona era un Prete!')
-		LANG.AddToLanguage('Italian', 'target_' .. PRIEST.name, 'Prete')
-		LANG.AddToLanguage('Italian', 'ttt2_desc_' .. PRIEST.name, [[Il Prete deve vincere con gli innocenti!]])
-		LANG.AddToLanguage('Italian', 'credit_' .. PRIEST.abbr .. '_all', 'Preti, avete guadagnato {num} credito/i per la vostra performance.')
+		LANG.AddToLanguage('Italiano', PRIEST.name, 'Prete')
+		LANG.AddToLanguage('Italiano', 'info_popup_' .. PRIEST.name,
+			[[Sei il Prete!
+			Usa la tua Deagle Benedetta per convertire i giocatori alla tua confraternita. Ma fai attenzione, solo i giocatori Innocenti si comporteranno bene.]])
+		LANG.AddToLanguage('Italiano', 'body_found_' .. PRIEST.abbr, 'Era un Prete.')
+		LANG.AddToLanguage('Italiano', 'search_role_' .. PRIEST.abbr, 'Questa persona era un Prete!')
+		LANG.AddToLanguage('Italiano', 'target_' .. PRIEST.name, 'Prete')
+		LANG.AddToLanguage('Italiano', 'ttt2_desc_' .. PRIEST.name, [[Il Prete deve vincere con gli innocenti!]])
+		LANG.AddToLanguage('Italiano', 'credit_' .. PRIEST.abbr .. '_all', 'Preti, avete guadagnato {num} credito/i per la vostra performance.')
 		
 		-- other role language elements
 		LANG.AddToLanguage('English', 'ttt2_priest_was_priest', 'This player appears to be a member of the brotherhood.')
 		LANG.AddToLanguage('Deutsch', 'ttt2_priest_was_priest', 'Dieser Spieler scheint ein Mitglied der Bruderschaft zu sein.')
-		LANG.AddToLanguage('Italian', 'ttt2_priest_was_priest', 'Questo giocatore sembra essere un membro della confraternita.')
+		LANG.AddToLanguage('Italiano', 'ttt2_priest_was_priest', 'Questo giocatore sembra essere un membro della confraternita.')
 	end
 end
 
