@@ -4,13 +4,6 @@ PRIEST_DATA.brotherhood = {}
 if CLIENT then
 	PRIEST_DATA.local_priest = {}
 
-	net.Receive("ttt2_role_priest_msg", function()
-		local string_identifier = net.ReadString()
-		if GetConVar("ttt_pri_show_messages"):GetBool() and PRIEST_DATA:IsBrother(LocalPlayer()) then
-			MSTACK:AddMessage(LANG.GetTranslation(string_identifier))
-		end
-	end)
-
 	net.Receive("ttt2_role_priest_new_brother", function()
 		local new_brother = net.ReadEntity()
 		if not new_brother or not new_brother:IsPlayer() then return end
@@ -79,7 +72,6 @@ if SERVER then
 	util.AddNetworkString("ttt2_role_priest_new_brother")
 	util.AddNetworkString("ttt2_role_priest_remove_brother")
 	util.AddNetworkString("ttt2_role_priest_clear_brotherhood")
-	util.AddNetworkString("ttt2_role_priest_msg")
 	util.AddNetworkString("ttt2_role_priest_recharge_icon")
 	util.AddNetworkString("ttt2_role_priest_corpse_update")
 
@@ -90,7 +82,7 @@ if SERVER then
 		dmg:SetAttacker(attacker or ply)
 		dmg:SetDamageForce(ply:GetAimVector())
 		dmg:SetDamagePosition(ply:GetPos())
-		dmg:SetDamageType(DMG_SLASH)
+		dmg:SetDamageType(DMG_GENERIC)
 
 		if inflictor then
 			dmg:SetInflictor(inflictor)
@@ -108,42 +100,56 @@ if SERVER then
 			if ply:GetSubRole() == ROLE_DETECTIVE or ply:GetSubRole() == ROLE_SNIFFER then
 				InstantDamage(ply, GetConVar("ttt_pri_damage_dete"):GetInt(), attacker, ents.Create("weapon_ttt2_holydeagle"))
 
-				self:SendMessage("ttt2_priest_detective")
+				if GetConVar("ttt_pri_show_messages"):GetBool() then
+					LANG.Msg(self:GetBrotherhood(), "ttt2_priest_detective", nil, MSG_MSTACK_PLAIN)
+				end
 
-			-- PRIESTS CAN"T BE ADDED TO THE BROTHERHOOD SINCE THEY ARE ALREADY A PART OF IT
+			-- PRIESTS CAN'T BE ADDED TO THE BROTHERHOOD SINCE THEY ARE ALREADY A PART OF IT
 			elseif ply:GetSubRole() == ROLE_PRIEST then
-				self:SendMessage("ttt2_priest_priest")
+				if GetConVar("ttt_pri_show_messages"):GetBool() then
+					LANG.Msg(self:GetBrotherhood(), "ttt2_priest_priest", nil, MSG_MSTACK_PLAIN)
+				end
 
 			-- INNOCENT PLAYERS ARE THE ONLY ONES TO BE CONVERTED BY THE HOLY DEAGLE
 			else
 				self:AddToBrotherhood(ply)
 
-				self:SendMessage("ttt2_priest_added")
+				if GetConVar("ttt_pri_show_messages"):GetBool() then
+					LANG.Msg(self:GetBrotherhood(), "ttt2_priest_added", nil, MSG_MSTACK_PLAIN)
+				end
 			end
 
 		-- UNKNOWN PLAYERS ARE CONVERTED AS WELL
 		elseif ply:GetSubRole() == ROLE_UNKNOWN then
 			self:AddToBrotherhood(ply)
 
-			self:SendMessage("ttt2_priest_added")
+			if GetConVar("ttt_pri_show_messages"):GetBool() then
+				LANG.Msg(self:GetBrotherhood(), "ttt2_priest_added", nil, MSG_MSTACK_PLAIN)
+			end
 
 		-- INFECTED PLAYERS GET KILLED BY THE HOLY DEAGLE
 		elseif ply:GetTeam() == TEAM_INFECTED then
-			InstantDamage(ply, 2000, attacker, ents.Create("weapon_ttt2_holydeagle"))
+			InstantDamage(ply, 250, attacker, ents.Create("weapon_ttt2_holydeagle"))
 
-			self:SendMessage("ttt2_priest_infected")
+			if GetConVar("ttt_pri_show_messages"):GetBool() then
+				LANG.Msg(self:GetBrotherhood(), "ttt2_priest_infected", nil, MSG_MSTACK_PLAIN)
+			end
 
 		-- NECROMANCERS GET KILLED BY THE HOLY DEAGLE
 		elseif ply:GetSubRole() == ROLE_NECROMANCER then
-			InstantDamage(ply, 2000, attacker, ents.Create("weapon_ttt2_holydeagle"))
+			InstantDamage(ply, 250, attacker, ents.Create("weapon_ttt2_holydeagle"))
 
-			self:SendMessage("ttt2_priest_necromancer")
+			if GetConVar("ttt_pri_show_messages"):GetBool() then
+				LANG.Msg(self:GetBrotherhood(), "ttt2_priest_necromancer", nil, MSG_MSTACK_PLAIN)
+			end
 
 		-- SIDEKICKS ARE KILLED BY THE HOLY DEAGLE
 		elseif ply:GetSubRole() == ROLE_SIDEKICK then
-			InstantDamage(ply, 2000, attacker, ents.Create("weapon_ttt2_holydeagle"))
+			InstantDamage(ply, 250, attacker, ents.Create("weapon_ttt2_holydeagle"))
 
-			self:SendMessage("ttt2_priest_sidekick")
+			if GetConVar("ttt_pri_show_messages"):GetBool() then
+				LANG.Msg(self:GetBrotherhood(), "ttt2_priest_sidekick", nil, MSG_MSTACK_PLAIN)
+			end
 
 		-- SHOOTING A MARKER ADDS THE COMPLETE BROTHERHOOD TO MARKED PLAYERS
 		elseif ply:GetSubRole() == ROLE_MARKER then
@@ -155,13 +161,17 @@ if SERVER then
 				end
 			end
 
-			self:SendMessage("ttt2_priest_marker")
+			if GetConVar("ttt_pri_show_messages"):GetBool() then
+				LANG.Msg(self:GetBrotherhood(), "ttt2_priest_marker", nil, MSG_MSTACK_PLAIN)
+			end
 
 		-- ALL OTHER EVIL ROLES KILL THE PRIEST
 		else
-			InstantDamage(attacker, 2000, ply, ents.Create("weapon_ttt2_holydeagle"))
+			InstantDamage(attacker, 250, ply, ents.Create("weapon_ttt2_holydeagle"))
 
-			self:SendMessage("ttt2_priest_died")
+			if GetConVar("ttt_pri_show_messages"):GetBool() then
+				LANG.Msg(self:GetBrotherhood(), "ttt2_priest_died", nil, MSG_MSTACK_PLAIN)
+			end
 		end
 	end
 
@@ -215,7 +225,9 @@ if SERVER then
 		net.WriteEntity(ply)
 		net.Send(player.GetAll()) -- send to all players
 
-		self:SendMessage("ttt2_priest_brother_died")
+		if GetConVar("ttt_pri_show_messages"):GetBool() then
+			LANG.Msg(self:GetBrotherhood(), "ttt2_priest_brother_died", nil, MSG_MSTACK_PLAIN)
+		end
 	end
 
 	function PRIEST_DATA:ClearBrotherhood()
@@ -282,12 +294,6 @@ if SERVER then
 		PRIEST_DATA:BrotherDies(ply)
 	end)
 
-	function PRIEST_DATA:SendMessage(identifier)
-		net.Start("ttt2_role_priest_msg")
-		net.WriteString(identifier)
-		net.Send(player.GetAll())
-	end
-
 	-- a hook that resets the brothers and the scoreboard
 	hook.Add("TTTEndRound", "ttt2_priest_update_scorboard_end", function()
 		PRIEST_DATA:ClearBrotherhood()
@@ -306,19 +312,28 @@ if SERVER then
 
 		-- for some rolechanges, the whole brotherhood gets changed too
 		if new == ROLE_SIDEKICK then -- jackal
-			PRIEST_DATA:SendMessage("ttt2_priest_brother_jackal")
+			if GetConVar("ttt_pri_show_messages"):GetBool() then
+				LANG.Msg(PRIEST_DATA:GetBrotherhood(), "ttt2_priest_brother_jackal", nil, MSG_MSTACK_PLAIN)
+			end
+
 			PRIEST_DATA:ChangeBrotherHoodRoleToSidekick(ply:GetNWEntity("binded_sidekick", nil))
 		end
 
 		if new == ROLE_ZOMBIE then -- necormancer
-			PRIEST_DATA:SendMessage("ttt2_priest_brother_necromancer")
+			if GetConVar("ttt_pri_show_messages"):GetBool() then
+				LANG.Msg(PRIEST_DATA:GetBrotherhood(), "ttt2_priest_brother_necromancer", nil, MSG_MSTACK_PLAIN)
+			end
+
 			PRIEST_DATA:ChangeBrotherHoodRoleNecromancer()
 		end
 	end)
 
 	-- the infected has to be handled differently
 	hook.Add("TTT2InfectedAddGroup", "ttt2_priest_add_brothers_to_infected", function(brothers)
-		PRIEST_DATA:SendMessage("ttt2_priest_brother_infected")
+		if GetConVar("ttt_pri_show_messages"):GetBool() then
+			LANG.Msg(PRIEST_DATA:GetBrotherhood(), "ttt2_priest_brother_infected", nil, MSG_MSTACK_PLAIN)
+		end
+
 		PRIEST_DATA:ChangeBrotherHoodRoleToInfected(brothers)
 	end)
 end
@@ -328,4 +343,14 @@ function PRIEST_DATA:IsBrother(ply)
 	if not isfunction(ply.SteamID64) and not isfunction(ply.EntIndex) then return false end
 
 	return self.brotherhood[tostring(ply:SteamID64() or ply:EntIndex())] or false
+end
+
+function PRIEST_DATA:GetBrotherhood()
+	local brothers = {}
+
+	for _, p in pairs(self.broterhood) do
+		brothers[#brothers + 1] = p
+	end
+
+	return brothers
 end
