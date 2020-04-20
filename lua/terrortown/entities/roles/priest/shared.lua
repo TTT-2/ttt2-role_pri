@@ -35,44 +35,6 @@ end
 
 function ROLE:Initialize()
 	roles.SetBaseRole(self, ROLE_INNOCENT)
-
-	if CLIENT then
-		-- Role specific language elements
-		LANG.AddToLanguage("English", PRIEST.name, "Priest")
-		LANG.AddToLanguage("English", "info_popup_" .. PRIEST.name,
-			[[You are the Priest!
-			Use your holy deagle to convert players into your brotherhood. But be careful, only innocent players behave well.]])
-		LANG.AddToLanguage("English", "body_found_" .. PRIEST.abbr, "They were a Priest.")
-		LANG.AddToLanguage("English", "search_role_" .. PRIEST.abbr, "This person was a Priest!")
-		LANG.AddToLanguage("English", "target_" .. PRIEST.name, "Priest")
-		LANG.AddToLanguage("English", "ttt2_desc_" .. PRIEST.name, [[The Priest needs to win with the innocents!]])
-		LANG.AddToLanguage("English", "credit_" .. PRIEST.abbr .. "_all", "Priests, you have been awarded {num} equipment credit(s) for your performance.")
-
-		LANG.AddToLanguage("Deutsch", PRIEST.name, "Priester")
-		LANG.AddToLanguage("Deutsch", "info_popup_" .. PRIEST.name,
-			[[Du bist ein Priester!
-			Benutze deine Heilige Deagle um andere Spieler in deine Bruderschaft aufzunehmen. Aber sei vorsichtig, nur Unschuldige verhalten sich gut.]])
-		LANG.AddToLanguage("Deutsch", "body_found_" .. PRIEST.abbr, "Er war ein Priester!")
-		LANG.AddToLanguage("Deutsch", "search_role_" .. PRIEST.abbr, "Diese Person war ein Priester!")
-		LANG.AddToLanguage("Deutsch", "target_" .. PRIEST.name, "Priester")
-		LANG.AddToLanguage("Deutsch", "ttt2_desc_" .. PRIEST.name, [[Der Priester gewinnt zusammen mit den Unschuldigen!]])
-		LANG.AddToLanguage("Deutsch", "credit_" .. PRIEST.abbr .. "_all", "Priester, dir wurde(n) {num} Ausrüstungs-Credit(s) für deine Leistung gegeben.")
-
-		LANG.AddToLanguage("Italiano", PRIEST.name, "Prete")
-		LANG.AddToLanguage("Italiano", "info_popup_" .. PRIEST.name,
-			[[Sei il Prete!
-			Usa la tua Deagle Benedetta per convertire i giocatori alla tua confraternita. Ma fai attenzione, solo i giocatori Innocenti si comporteranno bene.]])
-		LANG.AddToLanguage("Italiano", "body_found_" .. PRIEST.abbr, "Era un Prete.")
-		LANG.AddToLanguage("Italiano", "search_role_" .. PRIEST.abbr, "Questa persona era un Prete!")
-		LANG.AddToLanguage("Italiano", "target_" .. PRIEST.name, "Prete")
-		LANG.AddToLanguage("Italiano", "ttt2_desc_" .. PRIEST.name, [[Il Prete deve vincere con gli innocenti!]])
-		LANG.AddToLanguage("Italiano", "credit_" .. PRIEST.abbr .. "_all", "Preti, avete guadagnato {num} credito/i per la vostra performance.")
-
-		-- other role language elements
-		LANG.AddToLanguage("English", "ttt2_priest_was_priest", "This player appears to be a member of the brotherhood.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_was_priest", "Dieser Spieler scheint ein Mitglied der Bruderschaft zu sein.")
-		LANG.AddToLanguage("Italiano", "ttt2_priest_was_priest", "Questo giocatore sembra essere un membro della confraternita.")
-	end
 end
 
 if CLIENT then

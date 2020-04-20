@@ -4,36 +4,6 @@ PRIEST_DATA.brotherhood = {}
 if CLIENT then
 	PRIEST_DATA.local_priest = {}
 
-	hook.Add("Initialize", "TTTInitPriestMessageLang", function()
-		LANG.AddToLanguage("English", "ttt2_priest_added", "It seems like a player was added to the brotherhood.")
-		LANG.AddToLanguage("English", "ttt2_priest_brother_died", "It seems like a brother died.")
-		LANG.AddToLanguage("English", "ttt2_priest_detective", "The holy spirit was used to hurt a detective.")
-		LANG.AddToLanguage("English", "ttt2_priest_infected", "The holy spirit was used to kill an infected.")
-		LANG.AddToLanguage("English", "ttt2_priest_necromancer", "The holy spirit was used to kill a necromancer.")
-		LANG.AddToLanguage("English", "ttt2_priest_sidekick", "The holy spirit was used to kill a sidekick.")
-		LANG.AddToLanguage("English", "ttt2_priest_died", "The holy spirit killed a priest.")
-		LANG.AddToLanguage("English", "ttt2_priest_priest", "You can\"t add a priest to the brotherhood.")
-		LANG.AddToLanguage("English", "ttt2_priest_marker", "It seems like the priest shot a bucket full of color.")
-		LANG.AddToLanguage("English", "ttt2_priest_brother_jackal", "Shooting the priest converted the whole brotherhood to sidekicks.")
-		LANG.AddToLanguage("English", "ttt2_priest_brother_necromancer", "Reviving the priest as a zombie converted the whole brotherhood to zombies.")
-		LANG.AddToLanguage("English", "ttt2_priest_brother_infected", "Killing the priest converted the whole brotherhood to infected.")
-		LANG.AddToLanguage("English", "ttt2_priest_player_brother", "(PLAYER IS IN BROTHERHOOD)")
-
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_added", "Es scheint so, als wäre ein weiterer Spieler der Bruderschaft beigetreten.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_brother_died", "Es scheint so, als wäre ein Bruder gestorben.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_detective", "Der heilige Geist wurde verwendet um einen Detektiv zu verletzen.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_infected", "Der heilige Geist wurde verwendet um einen Infizierten zu töten.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_necromancer", "Der heilige Geist wurde verwendet um einen Geisterbeschwörer zu töten.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_sidekick", "Der heilige Geist wurde verwendet um einen Sidekick zu töten.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_died", "Der heilige Geist hat einen Priester getötet.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_priest", "Du kannst keinen Priester der Bruderschaft hinzufügen.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_marker", "Es scheint so, als habe der Priester einen Farbeimer angeschossen.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_brother_jackal", "Durch das Anschießen des Priesters wurde die ganze Bruderschaft zu Sidekicks.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_brother_necromancer", "Durch das Wiederbeleben des Priesters wurde die ganze Bruderschaft zu Zombies.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_brother_infected", "Durch das Töten des Priesters wurde die ganze Bruderschaft zu Infizierten.")
-		LANG.AddToLanguage("Deutsch", "ttt2_priest_player_brother", "(SPIELER IST IN BRUDERSCHAFT)")
-	end)
-
 	net.Receive("ttt2_role_priest_msg", function()
 		local string_identifier = net.ReadString()
 		if GetConVar("ttt_pri_show_messages"):GetBool() and PRIEST_DATA:IsBrother(LocalPlayer()) then
