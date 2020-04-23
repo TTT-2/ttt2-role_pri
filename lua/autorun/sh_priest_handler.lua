@@ -348,7 +348,7 @@ end
 function PRIEST_DATA:GetBrotherhood()
 	local brothers = {}
 
-	for _, p in pairs(self.broterhood) do
+	for _, p in pairs(self.brotherhood) do
 		brothers[#brothers + 1] = p
 	end
 
