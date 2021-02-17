@@ -1,4 +1,4 @@
-local L = LANG.GetLanguageTableReference("español")
+local L = LANG.GetLanguageTableReference("es")
 
 -- GENERAL ROLE LANGUAGE STRINGS
 L[PRIEST.name] = "Sacerdote"
