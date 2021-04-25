@@ -3,6 +3,8 @@ if SERVER then
 	resource.AddFile("materials/vgui/ttt/hud_icon_holy_deagle.png")
 
 	resource.AddFile("materials/vgui/ttt/player_brother.png")
+
+	resource.AddFile("materials/vgui/ttt/vskin/events/brotherhood.vmt")
 end
 
 if CLIENT then
@@ -11,6 +13,7 @@ if CLIENT then
 			hud = Material("vgui/ttt/hud_icon_brotherhood.png"),
 			type = "good"
 		})
+
 		STATUS:RegisterStatus("ttt2_role_priest_holy_deagle", {
 			hud = Material("vgui/ttt/hud_icon_holy_deagle.png"),
 			type = "bad",

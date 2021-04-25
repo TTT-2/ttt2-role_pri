@@ -25,3 +25,6 @@ L["ttt2_priest_brother_jackal"] = "La Hermandad se convirtió en Socios del Zorr
 L["ttt2_priest_brother_necromancer"] = "Revivir al Sacerdote como Zombie convierte a toda La Hermandad en Zombie."
 L["ttt2_priest_brother_infected"] = "Matar al Sacerdote convirtió a toda La Hermandad en Infectados."
 L["ttt2_priest_player_brother"] = "EL JUGADOR ESTÁ EN LA HERMANDAD"
+
+--L["title_event_brotherhood"] = "A player became a brother"
+--L["desc_event_brotherhood"] = "{priest} has added {brother} ({brole} / {bteam}) to their brotherhood."

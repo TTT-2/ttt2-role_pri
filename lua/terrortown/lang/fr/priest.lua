@@ -24,3 +24,6 @@ L["ttt2_priest_brother_jackal"] = "Le fait de tirer sur le Prêtre a converti to
 L["ttt2_priest_brother_necromancer"] = "La réanimation du Prêtre en tant que zombie a converti toute la Fraternité en Zombies."
 L["ttt2_priest_brother_infected"] = "Le meurtre du Prêtre a converti toute la Fraternité en Infecté."
 L["ttt2_priest_player_brother"] = "LE JOUEUR EST DANS LA FRATERNITÉ"
+
+--L["title_event_brotherhood"] = "A player became a brother"
+--L["desc_event_brotherhood"] = "{priest} has added {brother} ({brole} / {bteam}) to their brotherhood."

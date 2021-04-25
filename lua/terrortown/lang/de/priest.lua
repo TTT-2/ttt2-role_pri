@@ -24,3 +24,6 @@ L["ttt2_priest_brother_jackal"] = "Durch das Anschießen des Priesters wurde die
 L["ttt2_priest_brother_necromancer"] = "Durch das Wiederbeleben des Priesters wurde die ganze Bruderschaft zu Zombies."
 L["ttt2_priest_brother_infected"] = "Durch das Töten des Priesters wurde die ganze Bruderschaft zu Infizierten."
 L["ttt2_priest_player_brother"] = "SPIELER IST IN BRUDERSCHAFT"
+
+L["title_event_brotherhood"] = "Ein Spieler wurde ein Bruder"
+L["desc_event_brotherhood"] = "{priest} hat {brother} ({brole} / {bteam}) zur Bruderschaft hinzugefügt."

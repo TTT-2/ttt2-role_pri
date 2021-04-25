@@ -51,11 +51,12 @@ if CLIENT then
 end
 
 if SERVER then
-	-- Give Loadout on respawn and rolechange	
+	-- Give Loadout on respawn and rolechange
 	function ROLE:GiveRoleLoadout(ply, isRoleChange)
 		ply:GiveEquipmentWeapon("weapon_ttt2_holydeagle")
 		ply:GiveArmor(10)
-		PRIEST_DATA:AddToBrotherhood(ply)
+
+		PRIEST_DATA:AddToBrotherhood(nil, ply)
 	end
 
 	-- Remove Loadout on death and rolechange

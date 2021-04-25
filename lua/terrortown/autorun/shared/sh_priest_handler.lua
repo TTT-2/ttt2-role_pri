@@ -96,8 +96,8 @@ if SERVER then
 		if self:IsBrother(ply) and ply:GetSubRole() ~= ROLE_PRIEST then return end
 
 		if ply:GetTeam() == TEAM_INNOCENT then
-			-- A DETECTIVE/SNIFFER CAN NOT BE CONVERTED AND HE GETS 30 DAMAGE
-			if ply:GetSubRole() == ROLE_DETECTIVE or ply:GetSubRole() == ROLE_SNIFFER then
+			-- A DETECTIVE/SNIFFER/... CAN NOT BE CONVERTED AND HE GETS 30 DAMAGE
+			if ply:GetBaseRole() == ROLE_DETECTIVE then
 				InstantDamage(ply, GetConVar("ttt_pri_damage_dete"):GetInt(), attacker, ents.Create("weapon_ttt2_holydeagle"))
 
 				if GetConVar("ttt_pri_show_messages"):GetBool() then
@@ -112,7 +112,7 @@ if SERVER then
 
 			-- INNOCENT PLAYERS ARE THE ONLY ONES TO BE CONVERTED BY THE HOLY DEAGLE
 			else
-				self:AddToBrotherhood(ply)
+				self:AddToBrotherhood(attacker, ply)
 
 				if GetConVar("ttt_pri_show_messages"):GetBool() then
 					LANG.Msg(self:GetBrotherhood(), "ttt2_priest_added", nil, MSG_MSTACK_PLAIN)
@@ -121,7 +121,7 @@ if SERVER then
 
 		-- UNKNOWN PLAYERS ARE CONVERTED AS WELL
 		elseif ply:GetSubRole() == ROLE_UNKNOWN then
-			self:AddToBrotherhood(ply)
+			self:AddToBrotherhood(attacker, ply)
 
 			if GetConVar("ttt_pri_show_messages"):GetBool() then
 				LANG.Msg(self:GetBrotherhood(), "ttt2_priest_added", nil, MSG_MSTACK_PLAIN)
@@ -205,15 +205,21 @@ if SERVER then
 		self:RemoveFromBrotherhood(ply)
 	end
 
-	function PRIEST_DATA:AddToBrotherhood(ply)
+	function PRIEST_DATA:AddToBrotherhood(priest, ply)
 		-- add status icon with a timer since all effects are removed on player spawn
-		timer.Create("ttt2_priest_give_brotherhood", 0.05, 1, function() STATUS:AddStatus(ply, "ttt2_role_priest_brotherhood") end)
+		timer.Create("ttt2_priest_give_brotherhood", 0.05, 1, function()
+			if not IsValid(ply) then return end
+
+			STATUS:AddStatus(ply, "ttt2_role_priest_brotherhood")
+		end)
 
 		self.brotherhood[tostring(ply:SteamID64() or ply:EntIndex())] = true
 
 		net.Start("ttt2_role_priest_new_brother")
 		net.WriteEntity(ply)
-		net.Send(player.GetAll()) -- send to all players
+		net.Broadcast() -- send to all players
+
+		events.Trigger(EVENT_BROTHERHOOD, priest, ply)
 	end
 
 	function PRIEST_DATA:RemoveFromBrotherhood(ply)
@@ -223,7 +229,7 @@ if SERVER then
 
 		net.Start("ttt2_role_priest_remove_brother")
 		net.WriteEntity(ply)
-		net.Send(player.GetAll()) -- send to all players
+		net.Broadcast() -- send to all players
 
 		if GetConVar("ttt_pri_show_messages"):GetBool() then
 			LANG.Msg(self:GetBrotherhood(), "ttt2_priest_brother_died", nil, MSG_MSTACK_PLAIN)
@@ -236,7 +242,7 @@ if SERVER then
 		self.brotherhood = {}
 
 		net.Start("ttt2_role_priest_clear_brotherhood")
-		net.Send(player.GetAll())
+		net.Broadcast()
 	end
 
 	function PRIEST_DATA:SetRechargeIcon(ply, time)
