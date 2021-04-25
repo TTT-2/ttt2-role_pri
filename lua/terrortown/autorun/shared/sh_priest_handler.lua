@@ -157,7 +157,7 @@ if SERVER then
 
 			for _,p in ipairs(player.GetAll()) do
 				if MARKER_DATA and p:IsPlayer() and p:Alive() and p:IsTerror() and self:IsBrother(p) then
-					MARKER_DATA:SetMarkedPlayer(p)
+					MARKER_DATA:SetMarkedPlayer(attacker, p, false)
 				end
 			end
 
@@ -245,13 +245,13 @@ if SERVER then
 		net.Send(ply)
 	end
 
-	function PRIEST_DATA:ChangeBrotherHoodRoleNecromancer()
+	function PRIEST_DATA:ChangeBrotherHoodRoleNecromancer(ply)
 		for _, p in ipairs(player.GetAll()) do
 			if not IsValid(p) or not p:IsPlayer() or not p:Alive() or not p:IsTerror() or not self:IsBrother(p) then continue end
 
 			if p:GetSubRole() == ROLE_NECROMANCER or p:GetSubRole() == ROLE_ZOMBIE then continue end
 
-			AddZombie(p)
+			AddZombie(p, ply.zombieMaster)
 		end
 
 		self:ClearBrotherhood()
@@ -324,7 +324,7 @@ if SERVER then
 				LANG.Msg(PRIEST_DATA:GetBrotherhood(), "ttt2_priest_brother_necromancer", nil, MSG_MSTACK_PLAIN)
 			end
 
-			PRIEST_DATA:ChangeBrotherHoodRoleNecromancer()
+			PRIEST_DATA:ChangeBrotherHoodRoleNecromancer(ply)
 		end
 	end)
 
