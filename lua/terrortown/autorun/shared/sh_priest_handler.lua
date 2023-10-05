@@ -1,3 +1,9 @@
+CreateConVar("ttt_pri_refill_time", 45, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
+CreateConVar("ttt_pri_refill_time_missed", 5, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
+CreateConVar("ttt_pri_damage_dete", 30, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
+CreateConVar("ttt_pri_damage_marker", 30, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
+CreateConVar("ttt_pri_show_messages", 1, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
+
 PRIEST_DATA = {}
 PRIEST_DATA.brotherhood = {}
 
@@ -52,11 +58,11 @@ if CLIENT then
 		if not client or not IsValid(client) or not client:IsPlayer() then return end
 
 		if not PRIEST_DATA:IsBrother(client) then return end
-		pnl:AddColumn("Brother", function(ply, label)
+		pnl:AddColumn(LANG.GetTranslation("ttt2_priest_brotherhood"), function(ply, label)
 			if PRIEST_DATA:IsBrother(ply) then
-				return "yes"
+				return LANG.GetTranslation("ttt2_priest_brotherhood_yes")
 			else
-				return "-"
+				return LANG.GetTranslation("ttt2_priest_brotherhood_no")
 			end
 		end, 70)
 	end)

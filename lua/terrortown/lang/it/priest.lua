@@ -27,3 +27,16 @@ L["ttt2_priest_was_priest"] = "Questo giocatore sembra essere un membro della co
 
 --L["title_event_brotherhood"] = "A player became a brother"
 --L["desc_event_brotherhood"] = "{priest} has added {brother} ({brole} / {bteam}) to their brotherhood."
+
+--L["ttt2_weapon_holydeagle_name"] = "Holy Deagle"
+--L["ttt2_weapon_holydeagle_desc"] = "Shoot a player to make him holy, but be careful to only hit people in the innocent team."
+
+--L["ttt2_priest_brotherhood"] = "Brotherhood"
+--L["ttt2_priest_brotherhood_yes"] = "yes"
+--L["ttt2_priest_brotherhood_no"] = "-"
+
+--L["label_help_priest_messages"] = "The priest receives status messages about their brotherhood in the top right message stack area. These contain info about members of their brotherhood dieing for example."
+--L["label_pri_show_messages"] = "Show brotherhood status messages to the priest"
+--L["label_pri_refill_time"] = "Time in seconds to recharge the holy deagle"
+--L["label_pri_damage_dete"] = "Amount of demage dealt when shooting a detective"
+--L["label_pri_damage_marker"] = "Amount of demage dealt when shooting a marker"

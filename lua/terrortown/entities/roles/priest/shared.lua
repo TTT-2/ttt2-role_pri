@@ -48,6 +48,46 @@ if CLIENT then
 
 		search.is_brother = {img = "vgui/ttt/player_brother.png", text = LANG.GetTranslation("ttt2_priest_was_priest"), p = highest_id + 1}
 	end)
+
+	function ROLE:AddToSettingsMenu(parent)
+		local form = vgui.CreateTTT2Form(parent, "header_roles_additional")
+
+		form:MakeHelp({
+			label = "label_help_priest_messages"
+		})
+
+		form:MakeCheckBox({
+			serverConvar = "ttt_pri_show_messages",
+			label = "label_pri_show_messages"
+		})
+
+		form:MakeSlider({
+			serverConvar = "ttt_pri_refill_time",
+			label = "label_pri_refill_time",
+			min = 0,
+			max = 100,
+			decimal = 0
+		})
+
+		form:MakeSlider({
+			serverConvar = "ttt_pri_damage_dete",
+			label = "label_pri_damage_dete",
+			min = 0,
+			max = 100,
+			decimal = 0
+		})
+
+		-- only add this slider if the marker addon is installed
+		if MARKER then
+			form:MakeSlider({
+				serverConvar = "ttt_pri_damage_marker",
+				label = "label_pri_damage_marker",
+				min = 0,
+				max = 100,
+				decimal = 0
+			})
+		end
+	end
 end
 
 if SERVER then
